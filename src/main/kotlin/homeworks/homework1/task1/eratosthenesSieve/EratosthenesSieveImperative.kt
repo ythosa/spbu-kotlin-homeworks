@@ -1,4 +1,4 @@
-package homework1.task1.eratosthenesSieve
+package homeworks.homework1.task1.eratosthenesSieve
 
 import kotlin.math.sqrt
 
@@ -17,7 +17,7 @@ class EratosthenesSieveImperative : EratosthenesSieve {
         sieveArray.mapIndexedNotNull { index, isPrime -> if (isPrime) index else null }
 
     private fun sieve(sieveArray: MutableList<Boolean>, bound: Int) {
-        for (number in 2 until intSqrt(bound)) {
+        for (number in 2..intSqrt(bound)) {
             if (sieveArray[number]) {
                 for (i in number * number until bound step number) {
                     sieveArray[i] = false

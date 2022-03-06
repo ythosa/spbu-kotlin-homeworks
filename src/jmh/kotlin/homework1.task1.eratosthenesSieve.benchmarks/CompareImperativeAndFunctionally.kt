@@ -1,7 +1,7 @@
 package homework1.task1.eratosthenesSieve.benchmarks
 
-import homework1.task1.eratosthenesSieve.EratosthenesSieveFunctionally
-import homework1.task1.eratosthenesSieve.EratosthenesSieveImperative
+import homeworks.homework1.task1.eratosthenesSieve.EratosthenesSieveFunctionally
+import homeworks.homework1.task1.eratosthenesSieve.EratosthenesSieveImperative
 import org.openjdk.jmh.annotations.*
 
 @State(Scope.Benchmark)
