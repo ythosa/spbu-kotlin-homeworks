@@ -23,3 +23,8 @@ tasks.test {
         events("passed", "skipped", "failed")
     }
 }
+
+detekt {
+    parallel = true
+    autoCorrect = true
+}

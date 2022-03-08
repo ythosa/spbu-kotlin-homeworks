@@ -1,7 +1,7 @@
 package homeworks.homework1.task3.actions
 
-import java.util.LinkedList
 import java.util.Collections.swap
+import java.util.LinkedList
 
 class SwapAction(private val firstIndex: Int, private val secondIndex: Int) : Action {
     override fun apply(elements: LinkedList<Int>) {
