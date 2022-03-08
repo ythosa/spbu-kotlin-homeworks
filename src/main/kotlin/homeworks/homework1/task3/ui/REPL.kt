@@ -31,11 +31,11 @@ class REPL(
                 commandStorage.apply(parser.parse(line))
                 printStorageElements()
             } catch (e: InvalidCommandException) {
-                println("Oops... parsing command error: $e")
+                println("Oops... parsing command error: ${e.localizedMessage}")
             } catch (e: InvalidArgumentsException) {
-                println("Oops... parsing arguments error: $e")
+                println("Oops... parsing arguments error: ${e.localizedMessage}")
             } catch (e: ActionExecutionException) {
-                println("Oops... execution command error: $e")
+                println("Oops... execution command error: ${e.localizedMessage}")
             }
         }
     }
@@ -61,7 +61,7 @@ class REPL(
             commandStorage.cancel()
             printStorageElements()
         } catch (e: ImpossibleCancelCommandException) {
-            println("Oops... $e")
+            println("Oops... ${e.localizedMessage}")
         }
     }
 
