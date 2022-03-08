@@ -26,7 +26,7 @@ internal class EratosthenesSieveGetPrimesUpToTheBoundaryTest {
     @ParameterizedTest
     @MethodSource("getParameters")
     fun `get primes under 2 (must be empty list)`(sieve: EratosthenesSieve) {
-        assertEquals(listOf<Int>(), sieve.getPrimesUpToTheBoundary(2))
+        assertEquals(emptyList<Int>(), sieve.getPrimesUpToTheBoundary(2))
     }
 
     @ParameterizedTest

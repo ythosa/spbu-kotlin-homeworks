@@ -8,7 +8,6 @@ fun main() {
     val boundary = readln().toIntOrNull()
     if (boundary == null) {
         println("Oops... boundary must be integer")
-
         return
     }
 

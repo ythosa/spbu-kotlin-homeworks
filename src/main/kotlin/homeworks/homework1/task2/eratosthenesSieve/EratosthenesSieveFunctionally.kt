@@ -2,8 +2,9 @@ package homeworks.homework1.task2.eratosthenesSieve
 
 class EratosthenesSieveFunctionally : EratosthenesSieve {
     override fun getPrimesUpToTheBoundary(bound: Int): List<Int> {
-        if (bound <= 0)
+        if (bound <= 0) {
             throw InvalidBoundException(bound)
+        }
 
         val numbers = generateSequence(2) { it + 1 }
 
@@ -16,7 +17,8 @@ class EratosthenesSieveFunctionally : EratosthenesSieve {
 
         yield(head)
 
-        for (number in sieve(tail))
+        for (number in sieve(tail)) {
             yield(number)
+        }
     }
 }
