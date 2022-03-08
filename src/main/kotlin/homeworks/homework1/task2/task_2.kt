@@ -1,7 +1,7 @@
-package homeworks.homework1.task1
+package homeworks.homework1.task2
 
-import homeworks.homework1.task1.eratosthenesSieve.EratosthenesSieveImperative
-import homeworks.homework1.task1.eratosthenesSieve.InvalidBoundException
+import homeworks.homework1.task2.eratosthenesSieve.EratosthenesSieveImperative
+import homeworks.homework1.task2.eratosthenesSieve.InvalidBoundException
 
 fun main() {
     print("Hello username! I can print all primes less than or equal to the n (boundary)!\nPlease enter the boundary: ")

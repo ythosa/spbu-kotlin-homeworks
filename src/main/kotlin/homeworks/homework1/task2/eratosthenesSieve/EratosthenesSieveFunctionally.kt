@@ -1,4 +1,4 @@
-package homeworks.homework1.task1.eratosthenesSieve
+package homeworks.homework1.task2.eratosthenesSieve
 
 class EratosthenesSieveFunctionally : EratosthenesSieve {
     override fun getPrimesUpToTheBoundary(bound: Int): List<Int> {

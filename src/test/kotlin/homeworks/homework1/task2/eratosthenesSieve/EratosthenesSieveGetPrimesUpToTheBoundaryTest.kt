@@ -1,4 +1,4 @@
-package homeworks.homework1.task1.eratosthenesSieve
+package homeworks.homework1.task2.eratosthenesSieve
 
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.assertThrows
