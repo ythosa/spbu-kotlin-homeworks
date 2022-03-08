@@ -1,8 +1,15 @@
 package homeworks.homework1.task3.ui.parser
 
 import homeworks.homework1.task3.actions.Action
+import homeworks.homework1.task3.commandStorage.DuplicatedStrategyNamesException
 
 class Parser(private val strategies: List<ParsingStrategy>) {
+    init {
+        if (strategies.groupBy { it.getName() }.size != strategies.size) {
+            throw DuplicatedStrategyNamesException()
+        }
+    }
+
     fun parse(string: String): Action {
         val parts = string.split(" ")
         if (parts.isEmpty()) {
