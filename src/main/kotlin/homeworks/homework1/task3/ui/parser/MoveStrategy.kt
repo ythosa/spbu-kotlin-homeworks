@@ -1,9 +1,9 @@
 package homeworks.homework1.task3.ui.parser
 
 import homeworks.homework1.task3.actions.Action
-import homeworks.homework1.task3.actions.SwapAction
+import homeworks.homework1.task3.actions.MoveAction
 
-class SwapStrategy : ParsingStrategy {
+class MoveStrategy : ParsingStrategy {
     override fun parse(arguments: List<String>): Action {
         if (arguments.size != argumentsCount) {
             throw InvalidArgumentsException(expected = argumentsCount, actual = arguments.size)
@@ -14,10 +14,10 @@ class SwapStrategy : ParsingStrategy {
             throw InvalidArgumentsException(expected = "integer")
         }
 
-        return SwapAction(mapped[0], mapped[1])
+        return MoveAction(mapped[0], mapped[1])
     }
 
-    override fun getName(): String = "swap"
+    override fun getName(): String = "move"
 
     companion object {
         private const val argumentsCount = 2

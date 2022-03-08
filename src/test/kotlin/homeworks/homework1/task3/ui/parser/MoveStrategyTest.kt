@@ -6,25 +6,25 @@ import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
 
-internal class SwapStrategyTest {
-    private val swapStrategy = SwapStrategy()
+internal class MoveStrategyTest {
+    private val moveStrategy = MoveStrategy()
 
     @ParameterizedTest
     @MethodSource("getSuccessParsingTestData")
     fun `success parsing`(arguments: List<String>) {
-        assertDoesNotThrow { swapStrategy.parse(arguments) }
+        assertDoesNotThrow { moveStrategy.parse(arguments) }
     }
 
     @ParameterizedTest
     @MethodSource("getInvalidArgumentsCountTestData")
     fun `invalid arguments count`(arguments: List<String>) {
-        assertThrows<InvalidArgumentsException> { swapStrategy.parse(arguments) }
+        assertThrows<InvalidArgumentsException> { moveStrategy.parse(arguments) }
     }
 
     @ParameterizedTest
     @MethodSource("getInvalidArgumentsTypesTestData")
     fun `invalid arguments types`(arguments: List<String>) {
-        assertThrows<InvalidArgumentsException> { swapStrategy.parse(arguments) }
+        assertThrows<InvalidArgumentsException> { moveStrategy.parse(arguments) }
     }
 
     companion object {

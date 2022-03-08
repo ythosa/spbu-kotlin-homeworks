@@ -52,7 +52,7 @@ class REPL(
             * cancel - cancel last command
             * push <Int> - add integer element to the end
             * unshift <Int> - add integer element to the start
-            * swap first<Int> second<Int> - swaps two elements with indexes `first` and `second`
+            * move first<Int> second<Int> - move elements from `first` index to `second`
             """.trimIndent()
         )
     }

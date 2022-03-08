@@ -5,36 +5,36 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import java.util.LinkedList
 
-internal class SwapActionTest {
+internal class MoveActionTest {
     @Test
     fun apply() {
         val elements = LinkedList(listOf(1, 2, 3))
-        swapAction.apply(elements)
-        assertEquals(elements, LinkedList(listOf(1, 3, 2)))
+        moveAction.apply(elements)
+        assertEquals(LinkedList(listOf(2, 3, 1)), elements)
     }
 
     @Test
     fun `apply with invalid first index`() {
-        val elements = LinkedList(listOf(1))
-        assertThrows<ActionExecutionException> { swapAction.apply(elements) }
+        val elements = LinkedList(emptyList<Int>())
+        assertThrows<ActionExecutionException> { moveAction.apply(elements) }
     }
 
     @Test
     fun `apply with invalid second index`() {
         val elements = LinkedList(listOf(1, 2))
-        assertThrows<ActionExecutionException> { swapAction.apply(elements) }
+        assertThrows<ActionExecutionException> { moveAction.apply(elements) }
     }
 
     @Test
     fun cancel() {
         val elements = LinkedList(listOf(1, 3, 2))
-        swapAction.cancel(elements)
-        assertEquals(elements, LinkedList(listOf(1, 2, 3)))
+        moveAction.cancel(elements)
+        assertEquals(elements, LinkedList(listOf(2, 1, 3)))
     }
 
     companion object {
-        private const val firstIndex = 1
+        private const val firstIndex = 0
         private const val secondIndex = 2
-        private val swapAction = SwapAction(firstIndex, secondIndex)
+        private val moveAction = MoveAction(firstIndex, secondIndex)
     }
 }
