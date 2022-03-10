@@ -1,5 +1,7 @@
 package homeworks.homework1.task3.actions
 
+import homeworks.homework1.task3.commandStorage.actions.ActionExecutionException
+import homeworks.homework1.task3.commandStorage.actions.MoveAction
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows

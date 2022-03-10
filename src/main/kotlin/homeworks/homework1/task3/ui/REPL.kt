@@ -1,80 +1,32 @@
 package homeworks.homework1.task3.ui
 
-import homeworks.homework1.task3.actions.ActionExecutionException
-import homeworks.homework1.task3.commandStorage.ImpossibleCancelCommandException
-import homeworks.homework1.task3.commandStorage.PerformedCommandStorage
-import homeworks.homework1.task3.ui.parser.InvalidArgumentsException
-import homeworks.homework1.task3.ui.parser.InvalidCommandException
+import homeworks.homework1.task3.ui.handlers.Handler
+import homeworks.homework1.task3.ui.parser.Command
 import homeworks.homework1.task3.ui.parser.Parser
-import kotlin.system.exitProcess
 
-class REPL(
-    private val commandStorage: PerformedCommandStorage,
-    private val parser: Parser
-) {
+class REPL(private val parser: Parser, private val commands: Map<String, Handler>) {
     fun start() {
-        welcomeHandler()
-        helpHandler()
+        printWelcomeMessage()
 
         while (true) {
             print(">>> ")
-            handleCommand(readln().trim())
+            val inputCommand = parser.parse(readln())
+            executeCommand(inputCommand)
         }
     }
 
-    private fun handleCommand(line: String) = when (line) {
-        "help" -> helpHandler()
-        "cancel" -> cancelHandler()
-        "exit" -> exitHandler()
-        else -> {
-            try {
-                commandStorage.apply(parser.parse(line))
-                printStorageElements()
-            } catch (e: InvalidCommandException) {
-                println("Oops... parsing command error: ${e.localizedMessage}")
-            } catch (e: InvalidArgumentsException) {
-                println("Oops... parsing arguments error: ${e.localizedMessage}")
-            } catch (e: ActionExecutionException) {
-                println("Oops... execution command error: ${e.localizedMessage}")
+    private fun executeCommand(inputCommand: Command) {
+        for ((commandName, handler) in commands) {
+            if (inputCommand.name == commandName) {
+                return handler.handle(inputCommand.arguments)
             }
         }
+
+        if (inputCommand.name.isEmpty())
+            println("Oops.. you have to enter something")
+        else
+            println("Sorry, I do not know this command :(")
     }
 
-    private fun welcomeHandler() {
-        println("ʕ•́ᴥ•̀ʔっ Welcome to Performed Command Storage! ")
-    }
-
-    private fun helpHandler() {
-        println(
-            """Commands:
-            * help - returns help message
-            * exit - exit from command
-            * cancel - cancel last command
-            * push <Int> - add integer element to the end
-            * unshift <Int> - add integer element to the start
-            * move first<Int> second<Int> - move elements from `first` index to `second`
-            """.trimIndent()
-        )
-    }
-
-    private fun cancelHandler() {
-        try {
-            commandStorage.cancel()
-            printStorageElements()
-        } catch (e: ImpossibleCancelCommandException) {
-            println("Oops... ${e.localizedMessage}")
-        }
-    }
-
-    private fun exitHandler() {
-        println("ʕ•́ᴥ•̀ʔっ Goodbye! ")
-        exitProcess(0)
-    }
-
-    private fun printStorageElements() {
-        val elements = commandStorage.getElements()
-        val state = if (elements.isEmpty()) "<empty>" else elements.joinToString(", ")
-
-        println("State: $state")
-    }
+    private fun printWelcomeMessage() = println("ʕ•́ᴥ•̀ʔっ Welcome to Performed Command Storage! ")
 }

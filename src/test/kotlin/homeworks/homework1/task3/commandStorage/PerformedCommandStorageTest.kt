@@ -1,6 +1,6 @@
 package homeworks.homework1.task3.commandStorage
 
-import homeworks.homework1.task3.actions.PushAction
+import homeworks.homework1.task3.commandStorage.actions.PushAction
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
