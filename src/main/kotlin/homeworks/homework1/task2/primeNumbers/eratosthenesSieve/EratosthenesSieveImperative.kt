@@ -1,14 +1,14 @@
-package homeworks.homework1.task2.eratosthenesSieve
+package homeworks.homework1.task2.primeNumbers.eratosthenesSieve
 
-import kotlin.math.sqrt
+import homeworks.homework1.task2.primeNumbers.PrimeNumbersExtractor
 
-class EratosthenesSieveImperative : EratosthenesSieve {
+class EratosthenesSieveImperative : PrimeNumbersExtractor {
     override fun getPrimesUpToTheBoundary(bound: Int): List<Int> {
         if (bound <= 0) {
             throw InvalidBoundException(bound)
         }
 
-        val isPrimes = MutableList(bound) { index -> index !in 0..1 }
+        val isPrimes = MutableList(bound) { index -> index > 1 }
         sieve(isPrimes, bound)
 
         return extractPrimes(isPrimes)
@@ -18,14 +18,14 @@ class EratosthenesSieveImperative : EratosthenesSieve {
         isPrimes.mapIndexedNotNull { index, isPrime -> if (isPrime) index else null }
 
     private fun sieve(isPrimes: MutableList<Boolean>, bound: Int) {
-        for (number in 2..intSqrt(bound)) {
+        var number = 2
+        while (number * number <= bound) {
             if (isPrimes[number]) {
                 for (i in number * number until bound step number) {
                     isPrimes[i] = false
                 }
             }
+            number++
         }
     }
-
-    private fun intSqrt(n: Int) = sqrt(n.toFloat()).toInt()
 }

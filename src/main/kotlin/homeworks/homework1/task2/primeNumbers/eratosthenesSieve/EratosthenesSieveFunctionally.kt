@@ -1,6 +1,8 @@
-package homeworks.homework1.task2.eratosthenesSieve
+package homeworks.homework1.task2.primeNumbers.eratosthenesSieve
 
-class EratosthenesSieveFunctionally : EratosthenesSieve {
+import homeworks.homework1.task2.primeNumbers.PrimeNumbersExtractor
+
+class EratosthenesSieveFunctionally : PrimeNumbersExtractor {
     override fun getPrimesUpToTheBoundary(bound: Int): List<Int> {
         if (bound <= 0) {
             throw InvalidBoundException(bound)
