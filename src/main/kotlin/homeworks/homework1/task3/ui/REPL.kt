@@ -1,10 +1,10 @@
 package homeworks.homework1.task3.ui
 
-import homeworks.homework1.task3.ui.handlers.Handler
+import homeworks.homework1.task3.ui.handlers.CLIHandler
 import homeworks.homework1.task3.ui.parser.Command
 import homeworks.homework1.task3.ui.parser.Parser
 
-class REPL(private val parser: Parser, private val commands: Map<String, Handler>) {
+class REPL(private val parser: Parser, private val commands: Map<String, CLIHandler>) {
     fun start() {
         printWelcomeMessage()
 

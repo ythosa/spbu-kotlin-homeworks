@@ -10,9 +10,9 @@ import java.util.LinkedList
 internal class MoveActionTest {
     @Test
     fun apply() {
-        val elements = LinkedList(listOf(1, 2, 3))
+        val elements = mutableListOf(1, 2, 3)
         moveAction.apply(elements)
-        assertEquals(LinkedList(listOf(2, 3, 1)), elements)
+        assertEquals(mutableListOf(2, 3, 1), elements)
     }
 
     @Test
@@ -23,15 +23,15 @@ internal class MoveActionTest {
 
     @Test
     fun `apply with invalid second index`() {
-        val elements = LinkedList(listOf(1, 2))
+        val elements = mutableListOf(1, 2)
         assertThrows<ActionExecutionException> { moveAction.apply(elements) }
     }
 
     @Test
     fun cancel() {
-        val elements = LinkedList(listOf(1, 3, 2))
+        val elements = mutableListOf(1, 3, 2)
         moveAction.cancel(elements)
-        assertEquals(elements, LinkedList(listOf(2, 1, 3)))
+        assertEquals(elements, mutableListOf(2, 1, 3))
     }
 
     companion object {

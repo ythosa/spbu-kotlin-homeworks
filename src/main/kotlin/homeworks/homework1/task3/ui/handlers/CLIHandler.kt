@@ -1,6 +1,6 @@
 package homeworks.homework1.task3.ui.handlers
 
-abstract class Handler {
+abstract class CLIHandler {
     abstract fun handle(arguments: List<String>)
 
     fun extractArguments(arguments: List<String>, expected: Array<Cast>): List<Any> {

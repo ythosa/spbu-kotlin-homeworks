@@ -5,19 +5,18 @@ import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
-import java.util.LinkedList
 
 internal class UnshiftActionTest {
     @ParameterizedTest
     @MethodSource("getParametersApplyTest")
-    fun apply(elements: LinkedList<Int>, expected: LinkedList<Int>) {
+    fun apply(elements: MutableList<Int>, expected: MutableList<Int>) {
         unshiftAction.apply(elements)
         Assertions.assertEquals(elements, expected)
     }
 
     @ParameterizedTest
     @MethodSource("getParametersCancelTest")
-    fun cancel(elements: LinkedList<Int>, expected: LinkedList<Int>) {
+    fun cancel(elements: MutableList<Int>, expected: MutableList<Int>) {
         unshiftAction.cancel(elements)
         Assertions.assertEquals(elements, expected)
     }
@@ -28,14 +27,14 @@ internal class UnshiftActionTest {
 
         @JvmStatic
         fun getParametersApplyTest() = listOf(
-            Arguments.of(LinkedList<Int>(), LinkedList(listOf(unshiftValue))),
-            Arguments.of(LinkedList(listOf(1, 2, 3)), LinkedList(listOf(unshiftValue, 1, 2, 3)))
+            Arguments.of(mutableListOf<Int>(), mutableListOf(unshiftValue)),
+            Arguments.of(mutableListOf(1, 2, 3), mutableListOf(unshiftValue, 1, 2, 3))
         )
 
         @JvmStatic
         fun getParametersCancelTest() = listOf(
-            Arguments.of(LinkedList(listOf(1)), LinkedList<Int>()),
-            Arguments.of(LinkedList(listOf(1, 2, 3, 4)), LinkedList(listOf(2, 3, 4)))
+            Arguments.of(mutableListOf(1), mutableListOf<Int>()),
+            Arguments.of(mutableListOf(1, 2, 3, 4), mutableListOf(2, 3, 4))
         )
     }
 }

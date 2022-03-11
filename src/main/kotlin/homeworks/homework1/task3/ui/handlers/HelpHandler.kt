@@ -2,7 +2,7 @@ package homeworks.homework1.task3.ui.handlers
 
 import homeworks.homework1.task3.ui.Commands
 
-class HelpHandler : Handler() {
+class HelpHandler : CLIHandler() {
     override fun handle(arguments: List<String>) {
         println(
             """Commands:

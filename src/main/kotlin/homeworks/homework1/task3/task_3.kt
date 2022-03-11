@@ -4,9 +4,9 @@ import homeworks.homework1.task3.commandStorage.CommandStorage
 import homeworks.homework1.task3.commandStorage.PerformedCommandStorage
 import homeworks.homework1.task3.ui.Commands
 import homeworks.homework1.task3.ui.REPL
+import homeworks.homework1.task3.ui.handlers.CLIHandler
 import homeworks.homework1.task3.ui.handlers.CancelHandler
 import homeworks.homework1.task3.ui.handlers.ExitHandler
-import homeworks.homework1.task3.ui.handlers.Handler
 import homeworks.homework1.task3.ui.handlers.HelpHandler
 import homeworks.homework1.task3.ui.handlers.MoveHandler
 import homeworks.homework1.task3.ui.handlers.PushHandler
@@ -14,7 +14,7 @@ import homeworks.homework1.task3.ui.handlers.StateHandler
 import homeworks.homework1.task3.ui.handlers.UnshiftHandler
 import homeworks.homework1.task3.ui.parser.InputParser
 
-fun getReplConfig(commandStorage: CommandStorage): Map<String, Handler> = mapOf(
+fun getReplConfig(commandStorage: CommandStorage): Map<String, CLIHandler> = mapOf(
     Pair(Commands.PUSH.commandName, PushHandler(commandStorage)),
     Pair(Commands.UNSHIFT.commandName, UnshiftHandler(commandStorage)),
     Pair(Commands.MOVE.commandName, MoveHandler(commandStorage)),
