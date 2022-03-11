@@ -9,15 +9,7 @@ class EratosthenesSieveImperative : PrimeNumbersExtractor {
         }
 
         val isPrimes = MutableList(bound) { index -> index > 1 }
-        sieve(isPrimes, bound)
 
-        return extractPrimes(isPrimes)
-    }
-
-    private fun extractPrimes(isPrimes: MutableList<Boolean>): List<Int> =
-        isPrimes.mapIndexedNotNull { index, isPrime -> if (isPrime) index else null }
-
-    private fun sieve(isPrimes: MutableList<Boolean>, bound: Int) {
         var number = 2
         while (number * number <= bound) {
             if (isPrimes[number]) {
@@ -27,5 +19,7 @@ class EratosthenesSieveImperative : PrimeNumbersExtractor {
             }
             number++
         }
+
+        return isPrimes.mapIndexedNotNull { index, isPrime -> if (isPrime) index else null }
     }
 }
