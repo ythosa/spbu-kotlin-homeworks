@@ -1,16 +1,20 @@
 package homeworks.homework1.task3.commandStorage.actions
 
-class MoveAction(private val firstIndex: Int, private val secondIndex: Int) : Action {
+class MoveAction(private val from: Int, private val to: Int) : Action {
     override fun apply(elements: MutableList<Int>) {
-        listOf(firstIndex, secondIndex).forEach {
-            if (it !in elements.indices) throw ActionExecutionException("error: can't move with such index=$it")
+        if (from !in elements.indices) {
+            throw ActionExecutionException("error: can't move from index=$from")
         }
 
-        move(elements, firstIndex, secondIndex)
+        if (to !in elements.indices) {
+            throw ActionExecutionException("error: can't move to index=$to")
+        }
+
+        move(elements, from, to)
     }
 
     override fun cancel(elements: MutableList<Int>) {
-        move(elements, secondIndex, firstIndex)
+        move(elements, to, from)
     }
 
     private fun move(elements: MutableList<Int>, from: Int, to: Int) {
