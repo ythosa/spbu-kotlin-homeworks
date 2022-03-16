@@ -10,8 +10,8 @@ import homeworks.homework1.task3.ui.handlers.ExitHandler
 import homeworks.homework1.task3.ui.handlers.HelpHandler
 import homeworks.homework1.task3.ui.handlers.MoveHandler
 import homeworks.homework1.task3.ui.handlers.PushBackHandler
-import homeworks.homework1.task3.ui.handlers.StateHandler
 import homeworks.homework1.task3.ui.handlers.PushFirstHandler
+import homeworks.homework1.task3.ui.handlers.StateHandler
 import homeworks.homework1.task3.ui.parser.InputParser
 
 fun getReplConfig(commandStorage: CommandStorage): Map<String, CLIHandler> = mapOf(
