@@ -1,6 +1,6 @@
 package homeworks.homework1.task3.commandStorage
 
-import homeworks.homework1.task3.commandStorage.actions.PushAction
+import homeworks.homework1.task3.commandStorage.actions.PushBackAction
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -16,13 +16,13 @@ internal class PerformedCommandStorageTest {
 
     @Test
     fun apply() {
-        commandStorage!!.apply(PushAction(1))
+        commandStorage!!.apply(PushBackAction(1))
         assertEquals(commandStorage!!.getElements(), listOf(1))
     }
 
     @Test
     fun cancel() {
-        commandStorage!!.apply(PushAction(1))
+        commandStorage!!.apply(PushBackAction(1))
         commandStorage!!.cancel()
         assertEquals(commandStorage!!.getElements(), emptyList<Int>())
     }

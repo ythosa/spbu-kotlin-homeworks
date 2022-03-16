@@ -9,8 +9,8 @@ class HelpHandler : CLIHandler() {
             * ${Commands.HELP.commandName} - returns help message
             * ${Commands.EXIT.commandName} - exit from command
             * ${Commands.CANCEL.commandName} - cancel last command
-            * ${Commands.PUSH.commandName} <Int> - add integer element to the end
-            * ${Commands.UNSHIFT.commandName} <Int> - add integer element to the start
+            * ${Commands.PUSH_BACK.commandName} <Int> - add integer element to the end
+            * ${Commands.PUSH_FIRST.commandName} <Int> - add integer element to the start
             * ${Commands.MOVE.commandName} first<Int> second<Int> - move elements from `first` index to `second`
             * ${Commands.STATE.commandName} - returns current state
             """.trimIndent()

@@ -9,14 +9,14 @@ import homeworks.homework1.task3.ui.handlers.CancelHandler
 import homeworks.homework1.task3.ui.handlers.ExitHandler
 import homeworks.homework1.task3.ui.handlers.HelpHandler
 import homeworks.homework1.task3.ui.handlers.MoveHandler
-import homeworks.homework1.task3.ui.handlers.PushHandler
+import homeworks.homework1.task3.ui.handlers.PushBackHandler
 import homeworks.homework1.task3.ui.handlers.StateHandler
-import homeworks.homework1.task3.ui.handlers.UnshiftHandler
+import homeworks.homework1.task3.ui.handlers.PushFirstHandler
 import homeworks.homework1.task3.ui.parser.InputParser
 
 fun getReplConfig(commandStorage: CommandStorage): Map<String, CLIHandler> = mapOf(
-    Pair(Commands.PUSH.commandName, PushHandler(commandStorage)),
-    Pair(Commands.UNSHIFT.commandName, UnshiftHandler(commandStorage)),
+    Pair(Commands.PUSH_BACK.commandName, PushBackHandler(commandStorage)),
+    Pair(Commands.PUSH_FIRST.commandName, PushFirstHandler(commandStorage)),
     Pair(Commands.MOVE.commandName, MoveHandler(commandStorage)),
     Pair(Commands.CANCEL.commandName, CancelHandler(commandStorage)),
     Pair(Commands.STATE.commandName, StateHandler(commandStorage)),
