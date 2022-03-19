@@ -22,13 +22,13 @@ internal class PushFirstActionTest {
     }
 
     companion object {
-        private const val unshiftValue = 1
-        private val pushFirstAction = PushFirstAction(unshiftValue)
+        private const val pushFirstValue = 1
+        private val pushFirstAction = PushFirstAction(pushFirstValue)
 
         @JvmStatic
         fun getParametersApplyTest() = listOf(
-            Arguments.of(mutableListOf<Int>(), mutableListOf(unshiftValue)),
-            Arguments.of(mutableListOf(1, 2, 3), mutableListOf(unshiftValue, 1, 2, 3))
+            Arguments.of(mutableListOf<Int>(), mutableListOf(pushFirstValue)),
+            Arguments.of(mutableListOf(1, 2, 3), mutableListOf(pushFirstValue, 1, 2, 3))
         )
 
         @JvmStatic

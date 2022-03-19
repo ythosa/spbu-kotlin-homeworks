@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 
 internal class PerformedCommandStorageTest {
-    private var commandStorage: PerformedCommandStorage? = null
+    private lateinit var commandStorage: PerformedCommandStorage
 
     @BeforeEach
     fun initCommandStorage() {
@@ -16,19 +16,19 @@ internal class PerformedCommandStorageTest {
 
     @Test
     fun apply() {
-        commandStorage!!.apply(PushBackAction(1))
-        assertEquals(commandStorage!!.getElements(), listOf(1))
+        commandStorage.apply(PushBackAction(1))
+        assertEquals(commandStorage.getElements(), listOf(1))
     }
 
     @Test
     fun cancel() {
-        commandStorage!!.apply(PushBackAction(1))
-        commandStorage!!.cancel()
-        assertEquals(commandStorage!!.getElements(), emptyList<Int>())
+        commandStorage.apply(PushBackAction(1))
+        commandStorage.cancel()
+        assertEquals(commandStorage.getElements(), emptyList<Int>())
     }
 
     @Test
     fun `cancel error`() {
-        assertThrows<ImpossibleCancelCommandException> { commandStorage!!.cancel() }
+        assertThrows<ImpossibleCancelCommandException> { commandStorage.cancel() }
     }
 }
