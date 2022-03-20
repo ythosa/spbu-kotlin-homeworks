@@ -23,9 +23,9 @@ class AVLNode<K : Comparable<K>, V>(var key: K, var value: V) {
 
     fun updateHeight() = this.apply { height = max(leftHeight, rightHeight) + 1 }
 
-    fun traversePreOrder(visit: Visitor<K, V>) {
+    fun traverse(visit: Visitor<K, V>) {
         visit(Entry(key, value))
-        leftChild?.traversePreOrder(visit)
-        rightChild?.traversePreOrder(visit)
+        leftChild?.traverse(visit)
+        rightChild?.traverse(visit)
     }
 }
