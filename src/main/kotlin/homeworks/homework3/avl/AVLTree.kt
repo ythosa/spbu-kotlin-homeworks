@@ -1,5 +1,8 @@
 package homeworks.homework3.avl
 
+fun <K : Comparable<K>, V> avlTreeOf(vararg pairs: Pair<K, V>): MutableMap<K, V> =
+    AVLTree<K, V>().apply { putAll(pairs) }
+
 @Suppress("TooManyFunctions")
 class AVLTree<K : Comparable<K>, V> : MutableMap<K, V> {
     private var head: AVLNode<K, V>? = null
@@ -7,7 +10,7 @@ class AVLTree<K : Comparable<K>, V> : MutableMap<K, V> {
     override val size: Int
         get() {
             var size = 0
-            head?.traversePreOrder { size += 1 }
+            head?.traverse { size += 1 }
             return size
         }
 
@@ -16,8 +19,8 @@ class AVLTree<K : Comparable<K>, V> : MutableMap<K, V> {
 
         while (currentNode != null) {
             currentNode = when {
-                currentNode.key < key -> currentNode.leftChild
-                currentNode.key > key -> currentNode.rightChild
+                key < currentNode.key -> currentNode.leftChild
+                key > currentNode.key -> currentNode.rightChild
                 else -> return true
             }
         }
@@ -32,8 +35,8 @@ class AVLTree<K : Comparable<K>, V> : MutableMap<K, V> {
 
         while (currentNode != null) {
             currentNode = when {
-                currentNode.key < key -> currentNode.leftChild
-                currentNode.key > key -> currentNode.rightChild
+                key < currentNode.key -> currentNode.leftChild
+                key > currentNode.key -> currentNode.rightChild
                 else -> return currentNode.value
             }
         }
@@ -45,15 +48,15 @@ class AVLTree<K : Comparable<K>, V> : MutableMap<K, V> {
 
     override val entries: MutableSet<MutableMap.MutableEntry<K, V>>
         get() = mutableSetOf<MutableMap.MutableEntry<K, V>>().apply {
-            head?.traversePreOrder { entire -> this.add(entire) }
+            head?.traverse { entire -> this.add(entire) }
         }
     override val keys: MutableSet<K>
         get() = mutableSetOf<K>().apply {
-            head?.traversePreOrder { entire -> this.add(entire.key) }
+            head?.traverse { entire -> this.add(entire.key) }
         }
     override val values: MutableCollection<V>
         get() = mutableListOf<V>().apply {
-            head?.traversePreOrder { entire -> this.add(entire.value) }
+            head?.traverse { entire -> this.add(entire.value) }
         }
 
     override fun clear() {
@@ -79,8 +82,8 @@ class AVLTree<K : Comparable<K>, V> : MutableMap<K, V> {
         node ?: return AVLNode(key, value)
 
         when {
-            key < node.key -> nodePut(node.leftChild, key, value)
-            key > node.key -> nodePut(node.rightChild, key, value)
+            key < node.key -> node.leftChild = nodePut(node.leftChild, key, value)
+            key > node.key -> node.rightChild = nodePut(node.rightChild, key, value)
             else -> return node.apply { this.value = value }
         }
 
@@ -124,7 +127,7 @@ class AVLTree<K : Comparable<K>, V> : MutableMap<K, V> {
     }
 
     private fun leftRotate(node: AVLNode<K, V>): AVLNode<K, V> {
-        val pivot = node.rightChild!!
+        val pivot = node.rightChild ?: return node
 
         node.rightChild = pivot.leftChild
         pivot.leftChild = node
@@ -136,7 +139,7 @@ class AVLTree<K : Comparable<K>, V> : MutableMap<K, V> {
     }
 
     private fun rightRotate(node: AVLNode<K, V>): AVLNode<K, V> {
-        val pivot = node.leftChild!!
+        val pivot = node.leftChild ?: return node
 
         node.leftChild = pivot.rightChild
         pivot.rightChild = node
