@@ -27,6 +27,12 @@ tasks.test {
     }
 }
 
+
+detekt {
+    parallel = true
+    autoCorrect = true
+}
+
 jmh {
     warmupIterations.set(1)
     iterations.set(1)
