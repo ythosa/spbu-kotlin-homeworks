@@ -13,6 +13,18 @@ class AVLTree<K : Comparable<K>, V> : MutableMap<K, V> {
             head?.traverse { size += 1 }
             return size
         }
+    override val entries: MutableSet<MutableMap.MutableEntry<K, V>>
+        get() = mutableSetOf<MutableMap.MutableEntry<K, V>>().apply {
+            head?.traverse { entire -> this.add(entire) }
+        }
+    override val keys: MutableSet<K>
+        get() = mutableSetOf<K>().apply {
+            head?.traverse { entire -> this.add(entire.key) }
+        }
+    override val values: MutableCollection<V>
+        get() = mutableListOf<V>().apply {
+            head?.traverse { entire -> this.add(entire.value) }
+        }
 
     override fun containsKey(key: K): Boolean {
         var currentNode = head
@@ -45,19 +57,6 @@ class AVLTree<K : Comparable<K>, V> : MutableMap<K, V> {
     }
 
     override fun isEmpty(): Boolean = size == 0
-
-    override val entries: MutableSet<MutableMap.MutableEntry<K, V>>
-        get() = mutableSetOf<MutableMap.MutableEntry<K, V>>().apply {
-            head?.traverse { entire -> this.add(entire) }
-        }
-    override val keys: MutableSet<K>
-        get() = mutableSetOf<K>().apply {
-            head?.traverse { entire -> this.add(entire.key) }
-        }
-    override val values: MutableCollection<V>
-        get() = mutableListOf<V>().apply {
-            head?.traverse { entire -> this.add(entire.value) }
-        }
 
     override fun clear() {
         head = null
