@@ -2,7 +2,8 @@ package tests.test1.task1.priorityQueue
 
 import java.util.PriorityQueue
 
-fun <E, K : Comparable<K>> priorityQueueOf(vararg elements: Element<E, K>): tests.test1.task1.priorityQueue.PriorityQueue<E, K> =
+fun <E, K : Comparable<K>>
+priorityQueueOf(vararg elements: Element<E, K>): tests.test1.task1.priorityQueue.PriorityQueue<E, K> =
     PriorityQueue<E, K>().apply { elements.forEach { enqueue(it.element, it.priority) } }
 
 class PriorityQueue<E, K : Comparable<K>> {
