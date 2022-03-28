@@ -5,11 +5,11 @@ import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
 
-internal class PriorityQueueTest {
+internal class PriorityQueueImplTest {
     @ParameterizedTest
     @MethodSource("getEnqueueTestData")
     fun <E, K : Comparable<K>> enqueue(
-        queue: PriorityQueue<E, K>,
+        queue: PriorityQueueImpl<E, K>,
         element: Element<E, K>,
         expected: List<E>
     ) {
@@ -18,19 +18,19 @@ internal class PriorityQueueTest {
 
     @ParameterizedTest
     @MethodSource("getPeekTestData")
-    fun <E, K : Comparable<K>> peek(queue: PriorityQueue<E, K>, expected: E) {
+    fun <E, K : Comparable<K>> peek(queue: PriorityQueueImpl<E, K>, expected: E) {
         assertEquals(expected, queue.peek())
     }
 
     @ParameterizedTest
     @MethodSource("getRemoveTestData")
-    fun <E, K : Comparable<K>> remove(queue: PriorityQueue<E, K>, expected: List<E>) {
+    fun <E, K : Comparable<K>> remove(queue: PriorityQueueImpl<E, K>, expected: List<E>) {
         assertEquals(expected, queue.apply { remove() }.toList())
     }
 
     @ParameterizedTest
     @MethodSource("getRollTestData")
-    fun <E, K : Comparable<K>> roll(queue: PriorityQueue<E, K>, expected: E) {
+    fun <E, K : Comparable<K>> roll(queue: PriorityQueueImpl<E, K>, expected: E) {
         assertEquals(expected, queue.roll())
     }
 
