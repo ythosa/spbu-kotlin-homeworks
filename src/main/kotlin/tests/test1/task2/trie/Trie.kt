@@ -20,6 +20,7 @@ class Trie {
     private var head: Node? = null
     private var size = 0
 
+    @Suppress("ReturnCount")
     fun add(element: String): Boolean {
         if (element.isEmpty())
             return true
@@ -27,13 +28,13 @@ class Trie {
         if (head == null) {
             if (element.length == 1) {
                 head = Node(element.first(), true)
+                size++
+
                 return true
             } else {
                 head = Node(element.first(), false)
             }
         }
-
-        var currentNode = head
 
         return true
     }
