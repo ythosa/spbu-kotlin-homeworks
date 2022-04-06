@@ -183,13 +183,13 @@ internal class AVLTreeTest {
 
         @JvmStatic
         fun removeGetTestData() = listOf(
-            Arguments.of(avlTreeOf<Int, Int>(), 1, Pair(avlTreeOf<Int, Int>(), null)),
-            Arguments.of(avlTreeOf(Pair(1, 2)), 1, Pair(avlTreeOf<Int, Int>(), 2)),
             Arguments.of(
                 avlTreeOf(Pair("lol", 2), Pair("kek", 3), Pair("chmuk", 4), Pair("kukeck", 12)),
                 "lol",
                 Pair(avlTreeOf(Pair("kek", 3), Pair("chmuk", 4), Pair("kukeck", 12)), 2)
-            )
+            ),
+            Arguments.of(avlTreeOf<Int, Int>(), 1, Pair(avlTreeOf<Int, Int>(), null)),
+            Arguments.of(avlTreeOf(Pair(1, 2)), 1, Pair(avlTreeOf<Int, Int>(), 2))
         )
     }
 }

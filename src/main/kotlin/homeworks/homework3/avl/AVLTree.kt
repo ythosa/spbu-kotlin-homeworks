@@ -72,56 +72,47 @@ class AVLTree<K : Comparable<K>, V> : MutableMap<K, V> {
         private const val LEFT_SUBTREE_EXCESS = 2
         private const val RIGHT_SUBTREE_EXCESS = -2
 
-        @Suppress("ReturnCount")
         fun <K : Comparable<K>, V> nodePut(node: AVLNode<K, V>?, key: K, value: V): AVLNode<K, V> {
             node ?: return AVLNode(key, value)
 
-            when {
-                key < node.key -> node.leftChild = nodePut(node.leftChild, key, value)
-                key > node.key -> node.rightChild = nodePut(node.rightChild, key, value)
-                else -> return node.apply { this.value = value }
+            return when {
+                key < node.key -> balanced(node.apply { leftChild = nodePut(leftChild, key, value) }).updateHeight()
+                key > node.key -> balanced(node.apply { rightChild = nodePut(rightChild, key, value) }).updateHeight()
+                else -> node.apply { this.value = value }
             }
-
-            return balanced(node).updateHeight()
         }
 
-        @Suppress("ReturnCount")
-        fun <K : Comparable<K>, V> nodeRemove(
-            node: AVLNode<K, V>?,
-            key: K
-        ): Pair<AVLNode<K, V>?, AVLNode<K, V>?> {
+        fun <K : Comparable<K>, V> nodeRemove(node: AVLNode<K, V>?, key: K): Pair<AVLNode<K, V>?, AVLNode<K, V>?> {
             node ?: return Pair(null, null)
 
-            var removedNode: AVLNode<K, V>?
-
-            when {
-                key < node.key -> with(nodeRemove(node.leftChild, key)) {
-                    node.leftChild = first
-                    removedNode = second
+            return when {
+                key < node.key -> {
+                    val (newRoot, removedNode) = nodeRemove(node.leftChild, key)
+                    node.leftChild = newRoot
+                    Pair(balanced(node).updateHeight(), removedNode)
                 }
-                key > node.key -> with(nodeRemove(node.rightChild, key)) {
-                    node.rightChild = first
-                    removedNode = second
+                key > node.key -> {
+                    val (newRoot, removedNode) = nodeRemove(node.rightChild, key)
+                    node.rightChild = newRoot
+                    Pair(balanced(node).updateHeight(), removedNode)
                 }
                 else -> when {
-                    node.leftChild == null && node.rightChild == null -> return Pair(null, node)
-                    node.leftChild == null -> return Pair(node.rightChild, node)
-                    node.rightChild == null -> return Pair(node.leftChild, node)
+                    node.leftChild == null && node.rightChild == null -> Pair(null, node)
+                    node.leftChild == null -> Pair(node.rightChild, node)
+                    node.rightChild == null -> Pair(node.leftChild, node)
                     else -> {
                         node.rightChild?.minChild?.let {
                             node.key = it.key
                             node.value = it.value
                         }
 
-                        with(nodeRemove(node.rightChild, node.key)) {
-                            node.rightChild = first
-                            removedNode = second
-                        }
+                        val (newRoot, removedNode) = nodeRemove(node.rightChild, node.key)
+                        node.rightChild = newRoot
+
+                        Pair(balanced(node).updateHeight(), removedNode)
                     }
                 }
             }
-
-            return Pair(balanced(node).updateHeight(), removedNode)
         }
 
         fun <K : Comparable<K>, V> balanced(node: AVLNode<K, V>): AVLNode<K, V> = when (node.balanceFactor) {
