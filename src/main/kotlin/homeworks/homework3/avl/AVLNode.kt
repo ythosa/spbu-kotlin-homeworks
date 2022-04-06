@@ -6,7 +6,7 @@ typealias Visitor<K, V> = (Entry<K, V>) -> Unit
 
 class AVLNode<K : Comparable<K>, V>(var key: K, var value: V) {
     var height = 0
-    private set
+        private set
 
     var leftChild: AVLNode<K, V>? = null
     var rightChild: AVLNode<K, V>? = null

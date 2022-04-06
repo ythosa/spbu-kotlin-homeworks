@@ -7,7 +7,6 @@ fun Int.pow(n: Int) = this.toFloat().pow(n).toInt()
 fun <K : Comparable<K>, V> avlTreeOf(vararg pairs: Pair<K, V>): MutableMap<K, V> =
     AVLTree<K, V>().apply { putAll(pairs) }
 
-@Suppress("TooManyFunctions")
 class AVLTree<K : Comparable<K>, V> : MutableMap<K, V> {
     private var head: AVLNode<K, V>? = null
 
@@ -52,7 +51,7 @@ class AVLTree<K : Comparable<K>, V> : MutableMap<K, V> {
     }
 
     override fun put(key: K, value: V): V? {
-        head = nodePut(head, key, value)
+        head = SubtreeWorker.nodePut(head, key, value)
         size++
 
         return value
@@ -60,159 +59,166 @@ class AVLTree<K : Comparable<K>, V> : MutableMap<K, V> {
 
     override fun putAll(from: Map<out K, V>) = from.entries.forEach { put(it.key, it.value) }
 
-    override fun remove(key: K): V? = nodeRemove(head, key).let {
+    override fun remove(key: K): V? = SubtreeWorker.nodeRemove(head, key).let {
         head = it.first
         size--
 
         return it.second?.value
     }
 
-    @Suppress("ReturnCount")
-    private fun nodePut(node: AVLNode<K, V>?, key: K, value: V): AVLNode<K, V> {
-        node ?: return AVLNode(key, value)
+    override fun toString(): String = Serializer.toString(this)
 
-        when {
-            key < node.key -> node.leftChild = nodePut(node.leftChild, key, value)
-            key > node.key -> node.rightChild = nodePut(node.rightChild, key, value)
-            else -> return node.apply { this.value = value }
+    private object SubtreeWorker {
+        private const val LEFT_SUBTREE_EXCESS = 2
+        private const val RIGHT_SUBTREE_EXCESS = -2
+
+        @Suppress("ReturnCount")
+        fun <K : Comparable<K>, V> nodePut(node: AVLNode<K, V>?, key: K, value: V): AVLNode<K, V> {
+            node ?: return AVLNode(key, value)
+
+            when {
+                key < node.key -> node.leftChild = nodePut(node.leftChild, key, value)
+                key > node.key -> node.rightChild = nodePut(node.rightChild, key, value)
+                else -> return node.apply { this.value = value }
+            }
+
+            return balanced(node).updateHeight()
         }
 
-        return balanced(node).updateHeight()
-    }
+        @Suppress("ReturnCount")
+        fun <K : Comparable<K>, V> nodeRemove(
+            node: AVLNode<K, V>?,
+            key: K
+        ): Pair<AVLNode<K, V>?, AVLNode<K, V>?> {
+            node ?: return Pair(null, null)
 
-    @Suppress("ReturnCount")
-    private fun nodeRemove(node: AVLNode<K, V>?, key: K): Pair<AVLNode<K, V>?, AVLNode<K, V>?> {
-        node ?: return Pair(null, null)
+            var removedNode: AVLNode<K, V>?
 
-        var removedNode: AVLNode<K, V>?
+            when {
+                key < node.key -> with(nodeRemove(node.leftChild, key)) {
+                    node.leftChild = first
+                    removedNode = second
+                }
+                key > node.key -> with(nodeRemove(node.rightChild, key)) {
+                    node.rightChild = first
+                    removedNode = second
+                }
+                else -> when {
+                    node.leftChild == null && node.rightChild == null -> return Pair(null, node)
+                    node.leftChild == null -> return Pair(node.rightChild, node)
+                    node.rightChild == null -> return Pair(node.leftChild, node)
+                    else -> {
+                        node.rightChild?.minChild?.let {
+                            node.key = it.key
+                            node.value = it.value
+                        }
 
-        when {
-            key < node.key -> with(nodeRemove(node.leftChild, key)) {
-                node.leftChild = first
-                removedNode = second
-            }
-            key > node.key -> with(nodeRemove(node.rightChild, key)) {
-                node.rightChild = first
-                removedNode = second
-            }
-            else -> when {
-                node.leftChild == null && node.rightChild == null -> return Pair(null, node)
-                node.leftChild == null -> return Pair(node.rightChild, node)
-                node.rightChild == null -> return Pair(node.leftChild, node)
-                else -> {
-                    node.rightChild?.minChild?.let {
-                        node.key = it.key
-                        node.value = it.value
-                    }
-
-                    with(nodeRemove(node.rightChild, node.key)) {
-                        node.rightChild = first
-                        removedNode = second
+                        with(nodeRemove(node.rightChild, node.key)) {
+                            node.rightChild = first
+                            removedNode = second
+                        }
                     }
                 }
             }
+
+            return Pair(balanced(node).updateHeight(), removedNode)
         }
 
-        return Pair(balanced(node).updateHeight(), removedNode)
-    }
-
-    private fun balanced(node: AVLNode<K, V>): AVLNode<K, V> = when (node.balanceFactor) {
-        LEFT_SUBTREE_OVERRUN -> if (node.leftChild?.balanceFactor == -1) leftRightRotate(node) else rightRotate(node)
-        RIGHT_SUBTREE_OVERRUN -> if (node.rightChild?.balanceFactor == 1) rightLeftRotate(node) else leftRotate(node)
-        else -> node
-    }
-
-    private fun leftRotate(node: AVLNode<K, V>): AVLNode<K, V> {
-        val pivot = node.rightChild ?: return node
-
-        node.rightChild = pivot.leftChild
-        pivot.leftChild = node
-
-        node.updateHeight()
-        pivot.updateHeight()
-
-        return pivot
-    }
-
-    private fun rightRotate(node: AVLNode<K, V>): AVLNode<K, V> {
-        val pivot = node.leftChild ?: return node
-
-        node.leftChild = pivot.rightChild
-        pivot.rightChild = node
-
-        node.updateHeight()
-        pivot.updateHeight()
-
-        return pivot
-    }
-
-    private fun rightLeftRotate(node: AVLNode<K, V>): AVLNode<K, V> {
-        val rightChild = node.rightChild ?: return node
-
-        node.rightChild = rightRotate(rightChild)
-
-        return leftRotate(node)
-    }
-
-    private fun leftRightRotate(node: AVLNode<K, V>): AVLNode<K, V> {
-        val leftChild = node.leftChild ?: return node
-
-        node.leftChild = leftRotate(leftChild)
-
-        return rightRotate(node)
-    }
-
-    private fun toHeap(): Array<AVLNode<K, V>?> {
-        head ?: return emptyArray()
-
-        val heap = arrayOfNulls<AVLNode<K, V>?>(2.pow(head!!.height + 1))
-        val queue = ArrayDeque<Pair<AVLNode<K, V>, Int>>().apply { add(Pair(head!!, 0)) }
-
-        while (queue.isNotEmpty()) {
-            val (node, index) = queue.removeFirst()
-            heap[index] = node
-
-            if (node.leftChild != null)
-                queue.add(Pair(node.leftChild!!, 2 * index + 1))
-
-            if (node.rightChild != null)
-                queue.add(Pair(node.rightChild!!, 2 * index + 2))
+        fun <K : Comparable<K>, V> balanced(node: AVLNode<K, V>): AVLNode<K, V> = when (node.balanceFactor) {
+            LEFT_SUBTREE_EXCESS -> if (node.leftChild?.balanceFactor == -1) leftRightRotate(node) else rightRotate(node)
+            RIGHT_SUBTREE_EXCESS -> if (node.rightChild?.balanceFactor == 1) rightLeftRotate(node) else leftRotate(node)
+            else -> node
         }
 
-        return heap
+        fun <K : Comparable<K>, V> leftRotate(node: AVLNode<K, V>): AVLNode<K, V> {
+            val pivot = node.rightChild ?: return node
+
+            node.rightChild = pivot.leftChild
+            pivot.leftChild = node
+
+            node.updateHeight()
+            pivot.updateHeight()
+
+            return pivot
+        }
+
+        fun <K : Comparable<K>, V> rightRotate(node: AVLNode<K, V>): AVLNode<K, V> {
+            val pivot = node.leftChild ?: return node
+
+            node.leftChild = pivot.rightChild
+            pivot.rightChild = node
+
+            node.updateHeight()
+            pivot.updateHeight()
+
+            return pivot
+        }
+
+        fun <K : Comparable<K>, V> rightLeftRotate(node: AVLNode<K, V>): AVLNode<K, V> {
+            val rightChild = node.rightChild ?: return node
+
+            node.rightChild = rightRotate(rightChild)
+
+            return leftRotate(node)
+        }
+
+        fun <K : Comparable<K>, V> leftRightRotate(node: AVLNode<K, V>): AVLNode<K, V> {
+            val leftChild = node.leftChild ?: return node
+
+            node.leftChild = leftRotate(leftChild)
+
+            return rightRotate(node)
+        }
     }
 
-    override fun toString(): String {
-        head ?: return "empty tree"
+    private object Serializer {
+        fun <K : Comparable<K>, V> toString(tree: AVLTree<K, V>): String {
+            tree.head ?: return "empty tree"
 
-        val sb = StringBuilder()
-        val heap = this.toHeap()
-        val height = head!!.height
+            val sb = StringBuilder()
+            val heap = toHeap(tree)
+            val height = tree.head!!.height
 
-        val baseMultiplier = head.toString().length
-        var leftSpacesCount = 2.pow(height) - 1
-        var betweenSpacesCount = 0
+            val baseMultiplier = tree.head.toString().length
+            var leftSpacesCount = 2.pow(height) - 1
+            var betweenSpacesCount = 0
 
-        for (level in 0..height) {
-            sb.append(" ".repeat(baseMultiplier * leftSpacesCount))
-            for (i in 2.pow(level) - 1 until 2.pow(level + 1) - 1) {
-                if (heap[i] != null)
-                    sb.append(heap[i].toString())
-                else
-                    sb.append(" ".repeat(baseMultiplier))
-                sb.append(" ".repeat(baseMultiplier * betweenSpacesCount))
+            for (level in 0..height) {
+                sb.append(" ".repeat(baseMultiplier * leftSpacesCount))
+                for (i in 2.pow(level) - 1 until 2.pow(level + 1) - 1) {
+                    if (heap[i] != null)
+                        sb.append(heap[i].toString())
+                    else
+                        sb.append(" ".repeat(baseMultiplier))
+                    sb.append(" ".repeat(baseMultiplier * betweenSpacesCount))
+                }
+                sb.append("\n")
+
+                betweenSpacesCount = leftSpacesCount
+                leftSpacesCount -= 2.pow(height - level - 1)
             }
-            sb.append("\n")
 
-            betweenSpacesCount = leftSpacesCount
-            leftSpacesCount -= 2.pow(height - level - 1)
+            return sb.toString()
         }
 
-        return sb.toString()
-    }
+        private fun <K : Comparable<K>, V> toHeap(tree: AVLTree<K, V>): Array<AVLNode<K, V>?> {
+            tree.head ?: return emptyArray()
 
-    companion object {
-        private const val LEFT_SUBTREE_OVERRUN = 2
-        private const val RIGHT_SUBTREE_OVERRUN = -2
+            val heap = arrayOfNulls<AVLNode<K, V>?>(2.pow(tree.head!!.height + 1))
+            val queue = ArrayDeque<Pair<AVLNode<K, V>, Int>>().apply { add(Pair(tree.head!!, 0)) }
+
+            while (queue.isNotEmpty()) {
+                val (node, index) = queue.removeFirst()
+                heap[index] = node
+
+                if (node.leftChild != null)
+                    queue.add(Pair(node.leftChild!!, 2 * index + 1))
+
+                if (node.rightChild != null)
+                    queue.add(Pair(node.rightChild!!, 2 * index + 2))
+            }
+
+            return heap
+        }
     }
 }
