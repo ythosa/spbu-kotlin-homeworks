@@ -83,8 +83,14 @@ class AVLTree<K : Comparable<K>, V> : MutableMap<K, V> {
         var removedNode: AVLNode<K, V>? = null
 
         when {
-            key < node.key -> nodeRemove(node.leftChild, key)
-            key > node.key -> nodeRemove(node.rightChild, key)
+            key < node.key -> with(nodeRemove(node.leftChild, key)) {
+                node.leftChild = first
+                removedNode = second
+            }
+            key > node.key -> with(nodeRemove(node.rightChild, key)) {
+                node.rightChild = first
+                removedNode = second
+            }
             else -> when {
                 node.leftChild == null && node.rightChild == null -> return Pair(null, node)
                 node.leftChild == null -> return Pair(node.rightChild, node)

@@ -11,9 +11,9 @@ class AVLNode<K : Comparable<K>, V>(var key: K, var value: V) {
     var rightChild: AVLNode<K, V>? = null
 
     private val leftHeight: Int
-        get() = leftChild?.height ?: 0
+        get() = leftChild?.height ?: -1
     private val rightHeight: Int
-        get() = rightChild?.height ?: 0
+        get() = rightChild?.height ?: -1
 
     val balanceFactor: Int
         get() = leftHeight - rightHeight
