@@ -1,5 +1,9 @@
 package homeworks.homework3.avl
 
+import kotlin.math.pow
+
+fun Int.pow(n: Int) = this.toFloat().pow(n).toInt()
+
 fun <K : Comparable<K>, V> avlTreeOf(vararg pairs: Pair<K, V>): MutableMap<K, V> =
     AVLTree<K, V>().apply { putAll(pairs) }
 
@@ -80,7 +84,7 @@ class AVLTree<K : Comparable<K>, V> : MutableMap<K, V> {
     private fun nodeRemove(node: AVLNode<K, V>?, key: K): Pair<AVLNode<K, V>?, AVLNode<K, V>?> {
         node ?: return Pair(null, null)
 
-        var removedNode: AVLNode<K, V>? = null
+        var removedNode: AVLNode<K, V>?
 
         when {
             key < node.key -> with(nodeRemove(node.leftChild, key)) {
@@ -156,6 +160,55 @@ class AVLTree<K : Comparable<K>, V> : MutableMap<K, V> {
         node.leftChild = leftRotate(leftChild)
 
         return rightRotate(node)
+    }
+
+    private fun toHeap(): Array<AVLNode<K, V>?> {
+        head ?: return emptyArray()
+
+        val heap = arrayOfNulls<AVLNode<K, V>?>(2.pow(head!!.height + 1))
+        val queue = ArrayDeque<Pair<AVLNode<K, V>, Int>>().apply { add(Pair(head!!, 0)) }
+
+        while (queue.isNotEmpty()) {
+            val (node, index) = queue.removeFirst()
+            heap[index] = node
+
+            if (node.leftChild != null)
+                queue.add(Pair(node.leftChild!!, 2 * index + 1))
+
+            if (node.rightChild != null)
+                queue.add(Pair(node.rightChild!!, 2 * index + 2))
+        }
+
+        return heap
+    }
+
+    override fun toString(): String {
+        head ?: return "empty tree"
+
+        val sb = StringBuilder()
+        val heap = this.toHeap()
+        val height = head!!.height
+
+        val baseMultiplier = head.toString().length
+        var leftSpacesCount = 2.pow(height) - 1
+        var betweenSpacesCount = 0
+
+        for (level in 0..height) {
+            sb.append(" ".repeat(baseMultiplier * leftSpacesCount))
+            for (i in 2.pow(level) - 1 until 2.pow(level + 1) - 1) {
+                if (heap[i] != null)
+                    sb.append(heap[i].toString())
+                else
+                    sb.append(" ".repeat(baseMultiplier))
+                sb.append(" ".repeat(baseMultiplier * betweenSpacesCount))
+            }
+            sb.append("\n")
+
+            betweenSpacesCount = leftSpacesCount
+            leftSpacesCount -= 2.pow(height - level - 1)
+        }
+
+        return sb.toString()
     }
 
     companion object {

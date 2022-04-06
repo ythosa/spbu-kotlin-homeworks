@@ -5,7 +5,8 @@ import java.lang.Integer.max
 typealias Visitor<K, V> = (Entry<K, V>) -> Unit
 
 class AVLNode<K : Comparable<K>, V>(var key: K, var value: V) {
-    private var height = 0
+    var height = 0
+    private set
 
     var leftChild: AVLNode<K, V>? = null
     var rightChild: AVLNode<K, V>? = null
@@ -28,4 +29,6 @@ class AVLNode<K : Comparable<K>, V>(var key: K, var value: V) {
         leftChild?.traverse(visit)
         rightChild?.traverse(visit)
     }
+
+    override fun toString() = "[$key : $value]"
 }
