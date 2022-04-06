@@ -22,19 +22,7 @@ class AVLTree<K : Comparable<K>, V> : MutableMap<K, V> {
             head?.traverse { entire -> this.add(entire.value) }
         }
 
-    override fun containsKey(key: K): Boolean {
-        var currentNode = head
-
-        while (currentNode != null) {
-            currentNode = when {
-                key < currentNode.key -> currentNode.leftChild
-                key > currentNode.key -> currentNode.rightChild
-                else -> return true
-            }
-        }
-
-        return false
-    }
+    override fun containsKey(key: K) = get(key) != null
 
     override fun containsValue(value: V): Boolean = value in values
 
