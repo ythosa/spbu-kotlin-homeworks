@@ -7,12 +7,8 @@ fun <K : Comparable<K>, V> avlTreeOf(vararg pairs: Pair<K, V>): MutableMap<K, V>
 class AVLTree<K : Comparable<K>, V> : MutableMap<K, V> {
     private var head: AVLNode<K, V>? = null
 
-    override val size: Int
-        get() {
-            var size = 0
-            head?.traverse { size += 1 }
-            return size
-        }
+    override var size: Int = 0
+        private set
     override val entries: MutableSet<MutableMap.MutableEntry<K, V>>
         get() = mutableSetOf<MutableMap.MutableEntry<K, V>>().apply {
             head?.traverse { entire -> this.add(entire) }
@@ -60,10 +56,12 @@ class AVLTree<K : Comparable<K>, V> : MutableMap<K, V> {
 
     override fun clear() {
         head = null
+        size = 0
     }
 
     override fun put(key: K, value: V): V? {
         head = nodePut(head, key, value)
+        size++
 
         return value
     }
@@ -72,6 +70,7 @@ class AVLTree<K : Comparable<K>, V> : MutableMap<K, V> {
 
     override fun remove(key: K): V? = nodeRemove(head, key).let {
         head = it.first
+        size--
 
         return it.second?.value
     }
