@@ -22,7 +22,9 @@ class AVLNode<K : Comparable<K>, V>(var key: K, var value: V) {
     val minChild: AVLNode<K, V>
         get() = leftChild?.minChild ?: this
 
-    fun updateHeight() = this.apply { height = max(leftHeight, rightHeight) + 1 }
+    fun recomputeHeight() {
+        height = max(leftHeight, rightHeight) + 1
+    }
 
     fun traverse(visit: Visitor<K, V>) {
         visit(Entry(key, value))

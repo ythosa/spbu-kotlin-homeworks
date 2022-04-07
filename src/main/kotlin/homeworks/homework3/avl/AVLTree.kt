@@ -72,48 +72,50 @@ class AVLTree<K : Comparable<K>, V> : MutableMap<K, V> {
         private const val LEFT_SUBTREE_EXCESS = 2
         private const val RIGHT_SUBTREE_EXCESS = -2
 
-        fun <K : Comparable<K>, V> nodePut(node: AVLNode<K, V>?, key: K, value: V): AVLNode<K, V> = node?.let {
-            when {
-                key < node.key -> balanced(node.apply { leftChild = nodePut(leftChild, key, value) }).updateHeight()
-                key > node.key -> balanced(node.apply { rightChild = nodePut(rightChild, key, value) }).updateHeight()
-                else -> node.apply { this.value = value }
-            }
-        } ?: AVLNode(key, value)
+        fun <K : Comparable<K>, V> nodePut(node: AVLNode<K, V>?, key: K, value: V): AVLNode<K, V> = when {
+            node == null -> AVLNode(key, value)
+            key < node.key -> rebalanceAndRecomputeHeight(node.apply { leftChild = nodePut(leftChild, key, value) })
+            key > node.key -> rebalanceAndRecomputeHeight(node.apply { rightChild = nodePut(rightChild, key, value) })
+            else -> node.apply { this.value = value }
+        }
 
         fun <K : Comparable<K>, V> nodeRemove(
             node: AVLNode<K, V>?,
             key: K
-        ): Pair<AVLNode<K, V>?, AVLNode<K, V>?> = node?.let {
-            when {
-                key < node.key -> {
-                    val (newRoot, removedNode) = nodeRemove(node.leftChild, key)
-                    node.leftChild = newRoot
-                    Pair(balanced(node).updateHeight(), removedNode)
-                }
-                key > node.key -> {
-                    val (newRoot, removedNode) = nodeRemove(node.rightChild, key)
+        ): Pair<AVLNode<K, V>?, AVLNode<K, V>?> = when {
+            node == null -> Pair(null, null)
+            key < node.key -> {
+                val (newRoot, removedNode) = nodeRemove(node.leftChild, key)
+                node.leftChild = newRoot
+                Pair(rebalanceAndRecomputeHeight(node), removedNode)
+            }
+            key > node.key -> {
+                val (newRoot, removedNode) = nodeRemove(node.rightChild, key)
+                node.rightChild = newRoot
+                Pair(rebalanceAndRecomputeHeight(node), removedNode)
+            }
+            else -> when {
+                node.leftChild == null && node.rightChild == null -> Pair(null, node)
+                node.leftChild == null -> Pair(node.rightChild, node)
+                node.rightChild == null -> Pair(node.leftChild, node)
+                else -> {
+                    val minRightChild = node.rightChild!!.minChild
+                    node.key = minRightChild.key
+                    node.value = minRightChild.value
+
+                    val (newRoot, removedNode) = nodeRemove(node.rightChild, node.key)
                     node.rightChild = newRoot
-                    Pair(balanced(node).updateHeight(), removedNode)
-                }
-                else -> when {
-                    node.leftChild == null && node.rightChild == null -> Pair(null, node)
-                    node.leftChild == null -> Pair(node.rightChild, node)
-                    node.rightChild == null -> Pair(node.leftChild, node)
-                    else -> {
-                        val minRightChild = node.rightChild!!.minChild
-                        node.key = minRightChild.key
-                        node.value = minRightChild.value
 
-                        val (newRoot, removedNode) = nodeRemove(node.rightChild, node.key)
-                        node.rightChild = newRoot
-
-                        Pair(balanced(node).updateHeight(), removedNode)
-                    }
+                    Pair(rebalanceAndRecomputeHeight(node), removedNode)
                 }
             }
-        } ?: Pair(null, null)
+        }
 
-        private fun <K : Comparable<K>, V> balanced(node: AVLNode<K, V>): AVLNode<K, V> = when (node.balanceFactor) {
+        private fun <K : Comparable<K>, V> rebalanceAndRecomputeHeight(node: AVLNode<K, V>): AVLNode<K, V> {
+            return rebalance(node).also { it.recomputeHeight() }
+        }
+
+        private fun <K : Comparable<K>, V> rebalance(node: AVLNode<K, V>): AVLNode<K, V> = when (node.balanceFactor) {
             LEFT_SUBTREE_EXCESS -> if (node.leftChild?.balanceFactor == -1) leftRightRotate(node) else rightRotate(node)
             RIGHT_SUBTREE_EXCESS -> if (node.rightChild?.balanceFactor == 1) rightLeftRotate(node) else leftRotate(node)
             else -> node
@@ -125,8 +127,8 @@ class AVLTree<K : Comparable<K>, V> : MutableMap<K, V> {
             node.rightChild = pivot.leftChild
             pivot.leftChild = node
 
-            node.updateHeight()
-            pivot.updateHeight()
+            node.recomputeHeight()
+            pivot.recomputeHeight()
 
             return pivot
         }
@@ -137,8 +139,8 @@ class AVLTree<K : Comparable<K>, V> : MutableMap<K, V> {
             node.leftChild = pivot.rightChild
             pivot.rightChild = node
 
-            node.updateHeight()
-            pivot.updateHeight()
+            node.recomputeHeight()
+            pivot.recomputeHeight()
 
             return pivot
         }
