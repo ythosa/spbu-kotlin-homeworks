@@ -181,7 +181,9 @@ class AVLTree<K : Comparable<K>, V> : MutableMap<K, V> {
                         sb.append(" ".repeat(baseMultiplier))
                     sb.append(" ".repeat(baseMultiplier * betweenSpacesCount))
                 }
-                sb.append("\n")
+
+                if (level != height)
+                    sb.append("\n")
 
                 betweenSpacesCount = leftSpacesCount
                 leftSpacesCount -= 2.pow(height - level - 1)

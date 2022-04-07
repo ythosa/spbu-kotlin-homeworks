@@ -3,9 +3,9 @@ package homeworks.homework3
 import homeworks.homework3.avl.avlTreeOf
 
 infix fun String.example(function: () -> Unit) {
-    println("- Example of $this")
+    println("/* Example of $this")
     function()
-    println()
+    println("*/")
 }
 
 @Suppress("SpreadOperator", "MagicNumber")
@@ -18,7 +18,7 @@ fun main() {
     "tree put" example {
         val tree = avlTreeOf(*Array(10) { Pair(it, 0) })
         println(tree)
-        println("  // Put [11:0]")
+        println("// Put [11:0]")
         tree[11] = 0
         println(tree)
     }
@@ -26,7 +26,7 @@ fun main() {
     "tree remove" example {
         val tree = avlTreeOf(*Array(10) { Pair(it, 0) })
         println(tree)
-        println("  // Remove [3, 0]")
+        println("// Remove [3, 0]")
         tree.remove(3)
         println(tree)
     }
