@@ -11,7 +11,7 @@ infix fun String.example(function: () -> Unit) {
 @Suppress("SpreadOperator", "MagicNumber")
 fun main() {
     "tree balancing" example {
-        val tree = avlTreeOf(*Array(10) { Pair(it, 0) })
+        val tree = avlTreeOf(*Array(13) { Pair(it, 0) })
         println(tree)
     }
 

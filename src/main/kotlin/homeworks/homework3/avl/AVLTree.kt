@@ -164,7 +164,6 @@ class AVLTree<K : Comparable<K>, V> : MutableMap<K, V> {
         fun <K : Comparable<K>, V> toString(tree: AVLTree<K, V>): String {
             tree.head ?: return "empty tree"
 
-            val sb = StringBuilder()
             val heap = toHeap(tree)
             val height = tree.head!!.height
 
@@ -172,6 +171,8 @@ class AVLTree<K : Comparable<K>, V> : MutableMap<K, V> {
             var leftSpacesCount = 2.pow(height) - 1
             var betweenSpacesCount = 0
 
+            val lines = mutableListOf<String>()
+            val sb = StringBuilder()
             for (level in 0..height) {
                 sb.append(" ".repeat(baseMultiplier * leftSpacesCount))
                 for (i in 2.pow(level) - 1 until 2.pow(level + 1) - 1) {
@@ -182,14 +183,17 @@ class AVLTree<K : Comparable<K>, V> : MutableMap<K, V> {
                     sb.append(" ".repeat(baseMultiplier * betweenSpacesCount))
                 }
 
-                if (level != height)
-                    sb.append("\n")
+                lines.add(sb.toString())
+                sb.clear()
 
                 betweenSpacesCount = leftSpacesCount
                 leftSpacesCount -= 2.pow(height - level - 1)
             }
 
-            return sb.toString()
+            return if (lines.last().startsWith(" "))
+                lines.joinToString("\n") { it.slice(baseMultiplier until it.length) }
+            else
+                lines.joinToString("\n")
         }
 
         private fun <K : Comparable<K>, V> toHeap(tree: AVLTree<K, V>): Array<AVLNode<K, V>?> {
