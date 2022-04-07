@@ -99,9 +99,10 @@ class AVLTree<K : Comparable<K>, V> : MutableMap<K, V> {
                 node.leftChild == null -> Pair(node.rightChild, node)
                 node.rightChild == null -> Pair(node.leftChild, node)
                 else -> {
-                    val minRightChild = node.rightChild!!.minChild
-                    node.key = minRightChild.key
-                    node.value = minRightChild.value
+                    node.rightChild?.minChild?.let {
+                        node.key = it.key
+                        node.value = it.value
+                    }
 
                     val (newRoot, removedNode) = nodeRemove(node.rightChild, node.key)
                     node.rightChild = newRoot
@@ -164,45 +165,50 @@ class AVLTree<K : Comparable<K>, V> : MutableMap<K, V> {
 
     private object Serializer {
         fun <K : Comparable<K>, V> toString(tree: AVLTree<K, V>): String {
-            tree.head ?: return "empty tree"
-
-            val heap = toHeap(tree)
-            val height = tree.head!!.height
+            val head = tree.head ?: return "empty tree"
+            val height = head.height
+            val heap = heapifyTree(tree)
 
             val baseMultiplier = tree.head.toString().length
-            var leftSpacesCount = 2.pow(height) - 1
-            var betweenSpacesCount = 0
+            var leftSpacesNumber = 2.pow(height) - 1
+            var betweenSpacesNumber = 0
 
             val lines = mutableListOf<String>()
             val sb = StringBuilder()
             for (level in 0..height) {
-                sb.append(" ".repeat(baseMultiplier * leftSpacesCount))
+                sb.append(whitespacesOf(baseMultiplier * leftSpacesNumber))
+
                 for (i in 2.pow(level) - 1 until 2.pow(level + 1) - 1) {
                     if (heap[i] != null)
                         sb.append(heap[i].toString())
                     else
-                        sb.append(" ".repeat(baseMultiplier))
-                    sb.append(" ".repeat(baseMultiplier * betweenSpacesCount))
+                        sb.append(whitespacesOf(baseMultiplier))
+                    sb.append(whitespacesOf(baseMultiplier * betweenSpacesNumber))
                 }
 
                 lines.add(sb.toString())
                 sb.clear()
 
-                betweenSpacesCount = leftSpacesCount
-                leftSpacesCount -= 2.pow(height - level - 1)
+                betweenSpacesNumber = leftSpacesNumber
+                leftSpacesNumber -= 2.pow(height - level - 1)
             }
 
-            return if (lines.last().startsWith(" "))
-                lines.joinToString("\n") { it.slice(baseMultiplier until it.length) }
-            else
-                lines.joinToString("\n")
+            return trimWhitespaces(lines, baseMultiplier).joinToString("\n")
         }
 
-        private fun <K : Comparable<K>, V> toHeap(tree: AVLTree<K, V>): Array<AVLNode<K, V>?> {
-            tree.head ?: return emptyArray()
+        private fun trimWhitespaces(lines: List<String>, marginSize: Int): List<String> {
+            if (lines.last().startsWith(whitespacesOf(marginSize)))
+                return lines.map { it.slice(marginSize until it.length) }
 
-            val heap = arrayOfNulls<AVLNode<K, V>?>(2.pow(tree.head!!.height + 1))
-            val queue = ArrayDeque<Pair<AVLNode<K, V>, Int>>().apply { add(Pair(tree.head!!, 0)) }
+            return lines
+        }
+
+        private fun whitespacesOf(length: Int) = " ".repeat(length)
+
+        private fun <K : Comparable<K>, V> heapifyTree(tree: AVLTree<K, V>): Array<AVLNode<K, V>?> {
+            val head = tree.head ?: return emptyArray()
+            val heap = arrayOfNulls<AVLNode<K, V>?>(2.pow(head.height + 1))
+            val queue = ArrayDeque<Pair<AVLNode<K, V>, Int>>().apply { add(Pair(head, 0)) }
 
             while (queue.isNotEmpty()) {
                 val (node, index) = queue.removeFirst()
