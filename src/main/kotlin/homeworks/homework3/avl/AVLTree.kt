@@ -63,7 +63,7 @@ class AVLTree<K : Comparable<K>, V> : MutableMap<K, V> {
         head = it.first
         size--
 
-        return it.second?.value
+        it.second?.value
     }
 
     override fun toString(): String = Serializer.toString(this)
@@ -72,20 +72,19 @@ class AVLTree<K : Comparable<K>, V> : MutableMap<K, V> {
         private const val LEFT_SUBTREE_EXCESS = 2
         private const val RIGHT_SUBTREE_EXCESS = -2
 
-        fun <K : Comparable<K>, V> nodePut(node: AVLNode<K, V>?, key: K, value: V): AVLNode<K, V> {
-            node ?: return AVLNode(key, value)
-
-            return when {
+        fun <K : Comparable<K>, V> nodePut(node: AVLNode<K, V>?, key: K, value: V): AVLNode<K, V> = node?.let {
+            when {
                 key < node.key -> balanced(node.apply { leftChild = nodePut(leftChild, key, value) }).updateHeight()
                 key > node.key -> balanced(node.apply { rightChild = nodePut(rightChild, key, value) }).updateHeight()
                 else -> node.apply { this.value = value }
             }
-        }
+        } ?: AVLNode(key, value)
 
-        fun <K : Comparable<K>, V> nodeRemove(node: AVLNode<K, V>?, key: K): Pair<AVLNode<K, V>?, AVLNode<K, V>?> {
-            node ?: return Pair(null, null)
-
-            return when {
+        fun <K : Comparable<K>, V> nodeRemove(
+            node: AVLNode<K, V>?,
+            key: K
+        ): Pair<AVLNode<K, V>?, AVLNode<K, V>?> = node?.let {
+            when {
                 key < node.key -> {
                     val (newRoot, removedNode) = nodeRemove(node.leftChild, key)
                     node.leftChild = newRoot
@@ -101,10 +100,9 @@ class AVLTree<K : Comparable<K>, V> : MutableMap<K, V> {
                     node.leftChild == null -> Pair(node.rightChild, node)
                     node.rightChild == null -> Pair(node.leftChild, node)
                     else -> {
-                        node.rightChild?.minChild?.let {
-                            node.key = it.key
-                            node.value = it.value
-                        }
+                        val minRightChild = node.rightChild!!.minChild
+                        node.key = minRightChild.key
+                        node.value = minRightChild.value
 
                         val (newRoot, removedNode) = nodeRemove(node.rightChild, node.key)
                         node.rightChild = newRoot
@@ -113,7 +111,7 @@ class AVLTree<K : Comparable<K>, V> : MutableMap<K, V> {
                     }
                 }
             }
-        }
+        } ?: Pair(null, null)
 
         fun <K : Comparable<K>, V> balanced(node: AVLNode<K, V>): AVLNode<K, V> = when (node.balanceFactor) {
             LEFT_SUBTREE_EXCESS -> if (node.leftChild?.balanceFactor == -1) leftRightRotate(node) else rightRotate(node)
