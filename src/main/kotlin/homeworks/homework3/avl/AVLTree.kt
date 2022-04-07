@@ -113,13 +113,13 @@ class AVLTree<K : Comparable<K>, V> : MutableMap<K, V> {
             }
         } ?: Pair(null, null)
 
-        fun <K : Comparable<K>, V> balanced(node: AVLNode<K, V>): AVLNode<K, V> = when (node.balanceFactor) {
+        private fun <K : Comparable<K>, V> balanced(node: AVLNode<K, V>): AVLNode<K, V> = when (node.balanceFactor) {
             LEFT_SUBTREE_EXCESS -> if (node.leftChild?.balanceFactor == -1) leftRightRotate(node) else rightRotate(node)
             RIGHT_SUBTREE_EXCESS -> if (node.rightChild?.balanceFactor == 1) rightLeftRotate(node) else leftRotate(node)
             else -> node
         }
 
-        fun <K : Comparable<K>, V> leftRotate(node: AVLNode<K, V>): AVLNode<K, V> {
+        private fun <K : Comparable<K>, V> leftRotate(node: AVLNode<K, V>): AVLNode<K, V> {
             val pivot = node.rightChild ?: return node
 
             node.rightChild = pivot.leftChild
@@ -131,7 +131,7 @@ class AVLTree<K : Comparable<K>, V> : MutableMap<K, V> {
             return pivot
         }
 
-        fun <K : Comparable<K>, V> rightRotate(node: AVLNode<K, V>): AVLNode<K, V> {
+        private fun <K : Comparable<K>, V> rightRotate(node: AVLNode<K, V>): AVLNode<K, V> {
             val pivot = node.leftChild ?: return node
 
             node.leftChild = pivot.rightChild
@@ -143,7 +143,7 @@ class AVLTree<K : Comparable<K>, V> : MutableMap<K, V> {
             return pivot
         }
 
-        fun <K : Comparable<K>, V> rightLeftRotate(node: AVLNode<K, V>): AVLNode<K, V> {
+        private fun <K : Comparable<K>, V> rightLeftRotate(node: AVLNode<K, V>): AVLNode<K, V> {
             val rightChild = node.rightChild ?: return node
 
             node.rightChild = rightRotate(rightChild)
@@ -151,7 +151,7 @@ class AVLTree<K : Comparable<K>, V> : MutableMap<K, V> {
             return leftRotate(node)
         }
 
-        fun <K : Comparable<K>, V> leftRightRotate(node: AVLNode<K, V>): AVLNode<K, V> {
+        private fun <K : Comparable<K>, V> leftRightRotate(node: AVLNode<K, V>): AVLNode<K, V> {
             val leftChild = node.leftChild ?: return node
 
             node.leftChild = leftRotate(leftChild)
