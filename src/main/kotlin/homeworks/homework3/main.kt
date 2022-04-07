@@ -18,13 +18,15 @@ fun main() {
     "tree put" example {
         val tree = avlTreeOf(*Array(10) { Pair(it, 0) })
         println(tree)
-        tree[11] = 11
+        println("  // Put [11:0]")
+        tree[11] = 0
         println(tree)
     }
 
     "tree remove" example {
         val tree = avlTreeOf(*Array(10) { Pair(it, 0) })
         println(tree)
+        println("  // Remove [3, 0]")
         tree.remove(3)
         println(tree)
     }
