@@ -174,20 +174,17 @@ class AVLTree<K : Comparable<K>, V> : MutableMap<K, V> {
             var betweenSpacesNumber = 0
 
             val lines = mutableListOf<String>()
-            val sb = StringBuilder()
+            val lineBuffer = StringBuilder()
             for (level in 0..height) {
-                sb.append(whitespacesOf(baseMultiplier * leftSpacesNumber))
+                lineBuffer.append(whitespacesOf(baseMultiplier * leftSpacesNumber))
 
                 for (i in 2.pow(level) - 1 until 2.pow(level + 1) - 1) {
-                    if (heap[i] != null)
-                        sb.append(heap[i].toString())
-                    else
-                        sb.append(whitespacesOf(baseMultiplier))
-                    sb.append(whitespacesOf(baseMultiplier * betweenSpacesNumber))
+                    lineBuffer.append(heap[i]?.let { heap[i].toString() } ?: whitespacesOf(baseMultiplier))
+                    lineBuffer.append(whitespacesOf(baseMultiplier * betweenSpacesNumber))
                 }
 
-                lines.add(sb.toString())
-                sb.clear()
+                lines.add(lineBuffer.toString())
+                lineBuffer.clear()
 
                 betweenSpacesNumber = leftSpacesNumber
                 leftSpacesNumber -= 2.pow(height - level - 1)
@@ -197,8 +194,9 @@ class AVLTree<K : Comparable<K>, V> : MutableMap<K, V> {
         }
 
         private fun trimWhitespaces(lines: List<String>, marginSize: Int): List<String> {
-            if (lines.last().startsWith(whitespacesOf(marginSize)))
+            if (lines.last().startsWith(whitespacesOf(marginSize))) {
                 return lines.map { it.slice(marginSize until it.length) }
+            }
 
             return lines
         }
@@ -214,11 +212,8 @@ class AVLTree<K : Comparable<K>, V> : MutableMap<K, V> {
                 val (node, index) = queue.removeFirst()
                 heap[index] = node
 
-                if (node.leftChild != null)
-                    queue.add(Pair(node.leftChild!!, 2 * index + 1))
-
-                if (node.rightChild != null)
-                    queue.add(Pair(node.rightChild!!, 2 * index + 2))
+                node.leftChild?.let { queue.add(Pair(it, 2 * index + 1)) }
+                node.rightChild?.let { queue.add(Pair(it, 2 * index + 2)) }
             }
 
             return heap
