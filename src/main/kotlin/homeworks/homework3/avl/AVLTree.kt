@@ -179,7 +179,7 @@ class AVLTree<K : Comparable<K>, V> : MutableMap<K, V> {
                 lineBuffer.append(whitespacesOf(baseMultiplier * leftSpacesNumber))
 
                 for (i in 2.pow(level) - 1 until 2.pow(level + 1) - 1) {
-                    lineBuffer.append(heap[i]?.let { heap[i].toString() } ?: whitespacesOf(baseMultiplier))
+                    lineBuffer.append(heap[i]?.toString() ?: whitespacesOf(baseMultiplier))
                     lineBuffer.append(whitespacesOf(baseMultiplier * betweenSpacesNumber))
                 }
 
