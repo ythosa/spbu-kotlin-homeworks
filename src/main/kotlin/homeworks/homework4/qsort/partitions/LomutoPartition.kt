@@ -3,7 +3,7 @@ package homeworks.homework4.qsort.partitions
 import homeworks.homework4.qsort.swapAt
 
 class LomutoPartition<T : Comparable<T>> : Partition<T> {
-    override fun applyPartition(list: MutableList<T>, lowIndex: Int, highIndex: Int): Int {
+    override fun apply(list: MutableList<T>, lowIndex: Int, highIndex: Int): Int {
         val pivot = list[highIndex]
 
         var i = lowIndex

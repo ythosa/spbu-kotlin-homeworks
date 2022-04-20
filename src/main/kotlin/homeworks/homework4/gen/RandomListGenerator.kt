@@ -7,7 +7,7 @@ class RandomListGenerator(
     private val maxValue: Int,
     private val elementCount: Int
 ) {
-    private constructor(builder: Builder) : this(builder.minValue, builder.maxValue, builder.elementCount)
+    private constructor(builder: Builder) : this(builder.minValue, builder.maxValue, builder.elementsCount)
 
     fun generate(): List<Int> = List(elementCount) { Random.nextInt(minValue, maxValue) }
 
@@ -18,7 +18,7 @@ class RandomListGenerator(
     class Builder {
         var minValue = 0
         var maxValue = 0
-        var elementCount = 0
+        var elementsCount = 0
 
         fun build() = RandomListGenerator(this)
     }
