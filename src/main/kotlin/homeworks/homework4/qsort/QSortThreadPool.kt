@@ -21,7 +21,7 @@ class QSortThreadPool(
             if (lowIndex < highIndex) {
                 val pivotIndex = partition.apply(list, lowIndex, highIndex)
                 invokeAll(
-                    Sort(list, partition, lowIndex, pivotIndex),
+                    Sort(list, partition, lowIndex, pivotIndex - 1),
                     Sort(list, partition, pivotIndex + 1, highIndex),
                 )
             }

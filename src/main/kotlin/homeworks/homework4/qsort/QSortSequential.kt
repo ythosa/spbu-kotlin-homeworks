@@ -2,7 +2,7 @@ package homeworks.homework4.qsort
 
 import homeworks.homework4.qsort.partitions.Partition
 
-class QSortSequential<T : Comparable<T>> : QSort {
+class QSortSequential : QSort {
     override fun <T : Comparable<T>> sorted(list: MutableList<T>, partition: Partition<T>) {
         sort(list, partition)
     }
@@ -15,7 +15,7 @@ class QSortSequential<T : Comparable<T>> : QSort {
     ) {
         if (lowIndex < highIndex) {
             val pivotIndex = partition.apply(list, lowIndex, highIndex)
-            sort(list, partition, lowIndex, pivotIndex)
+            sort(list, partition, lowIndex, pivotIndex - 1)
             sort(list, partition, pivotIndex + 1, highIndex)
         }
     }
