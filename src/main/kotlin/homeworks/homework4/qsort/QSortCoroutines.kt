@@ -7,9 +7,7 @@ import kotlinx.coroutines.runBlocking
 
 class QSortCoroutines : QSort {
     override fun <T : Comparable<T>> sorted(list: MutableList<T>, partition: Partition<T>): Unit = runBlocking {
-        launch {
-            sort(list, partition)
-        }
+        sort(list, partition)
     }
 
     private suspend fun <T : Comparable<T>> sort(
