@@ -4,25 +4,25 @@ import homeworks.homework4.qsort.partitions.Partition
 import java.util.concurrent.ForkJoinPool
 import java.util.concurrent.RecursiveAction
 
-class QSortThreadPool(
-    private val executorService: ForkJoinPool
-) : QSort {
-    override fun <T : Comparable<T>> sorted(list: MutableList<T>, partition: Partition<T>) {
-        executorService.invoke(Sort(list, partition))
+class QSortThreadPool<T : Comparable<T>>(
+    private val partition: Partition<T>,
+    private val executorService: ForkJoinPool,
+) : QSort<T> {
+    override fun sorted(list: MutableList<T>) {
+        executorService.invoke(Sort(list))
     }
 
-    private class Sort<T : Comparable<T>>(
+    private inner class Sort(
         private val list: MutableList<T>,
-        private val partition: Partition<T>,
         private val lowIndex: Int = 0,
         private val highIndex: Int = list.size - 1
     ) : RecursiveAction() {
         override fun compute() {
             if (lowIndex < highIndex) {
-                val pivotIndex = partition.apply(list, lowIndex, highIndex)
+                val partitionIndices = partition.apply(list, lowIndex, highIndex)
                 invokeAll(
-                    Sort(list, partition, lowIndex, pivotIndex - 1),
-                    Sort(list, partition, pivotIndex + 1, highIndex),
+                    Sort(list, lowIndex, partitionIndices.leftToIndex),
+                    Sort(list, partitionIndices.rightFromIndex, highIndex),
                 )
             }
         }

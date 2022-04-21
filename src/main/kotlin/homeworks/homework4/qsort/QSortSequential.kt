@@ -2,21 +2,20 @@ package homeworks.homework4.qsort
 
 import homeworks.homework4.qsort.partitions.Partition
 
-class QSortSequential : QSort {
-    override fun <T : Comparable<T>> sorted(list: MutableList<T>, partition: Partition<T>) {
-        sort(list, partition)
+class QSortSequential<T : Comparable<T>>(private val partition: Partition<T>) : QSort<T> {
+    override fun sorted(list: MutableList<T>) {
+        sort(list)
     }
 
-    private fun <T : Comparable<T>> sort(
+    private fun sort(
         list: MutableList<T>,
-        partition: Partition<T>,
         lowIndex: Int = 0,
         highIndex: Int = list.size - 1
     ) {
         if (lowIndex < highIndex) {
-            val pivotIndex = partition.apply(list, lowIndex, highIndex)
-            sort(list, partition, lowIndex, pivotIndex - 1)
-            sort(list, partition, pivotIndex + 1, highIndex)
+            val partitionIndices = partition.apply(list, lowIndex, highIndex)
+            sort(list, lowIndex, partitionIndices.leftToIndex)
+            sort(list, partitionIndices.rightFromIndex, highIndex)
         }
     }
 }

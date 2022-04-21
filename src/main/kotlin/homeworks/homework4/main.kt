@@ -4,6 +4,7 @@ import homeworks.homework4.gen.RandomListGenerator
 import homeworks.homework4.qsort.QSortCoroutines
 import homeworks.homework4.qsort.QSortSequential
 import homeworks.homework4.qsort.QSortThreadPool
+import homeworks.homework4.qsort.partitions.HoarePartition
 import homeworks.homework4.qsort.partitions.LomutoPartition
 import java.util.concurrent.ForkJoinPool
 
@@ -15,9 +16,9 @@ fun main() {
         elementsCount = 1000
     }.generate().toMutableList()
 
-//    val qSort = QSortThreadPool(executorService = ForkJoinPool(10))
-    val qSort = QSortCoroutines()
-//    val qSort = QSortSequential()
-    qSort.sorted(l, LomutoPartition())
-    println(l)
+//    val qSort = QSortThreadPool(LomutoPartition(), ForkJoinPool(10))
+    val qSort = QSortCoroutines<Int>(HoarePartition())
+//    val qSort = QSortSequential(LomutoPartition())
+    qSort.sorted(l)
+    println(l == l.sorted())
 }

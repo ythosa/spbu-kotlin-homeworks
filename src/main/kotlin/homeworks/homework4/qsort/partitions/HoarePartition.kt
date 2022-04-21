@@ -3,7 +3,7 @@ package homeworks.homework4.qsort.partitions
 import homeworks.homework4.qsort.swapAt
 
 class HoarePartition<T : Comparable<T>> : Partition<T> {
-    override fun apply(list: MutableList<T>, lowIndex: Int, highIndex: Int): Int {
+    override fun apply(list: MutableList<T>, lowIndex: Int, highIndex: Int): PartitionResult {
         val pivot = list[lowIndex]
 
         var i = lowIndex - 1
@@ -20,7 +20,7 @@ class HoarePartition<T : Comparable<T>> : Partition<T> {
             if (i < j) {
                 list.swapAt(i, j)
             } else {
-                return j
+                return PartitionResult(j, j + 1)
             }
         }
     }
