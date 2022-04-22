@@ -16,7 +16,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
+import homeworks.homework4.gen.RandomListGenerator
+import homeworks.homework4.qsort.QSortCoroutines
+import homeworks.homework4.qsort.QSortSequential
+import homeworks.homework4.qsort.QSortThreadPool
 import homeworks.homework4.qsort.partitions.LomutoPartition
+import java.util.concurrent.ForkJoinPool
+import kotlin.time.ExperimentalTime
+import kotlin.time.measureTime
 
 @Composable
 @Preview
@@ -54,9 +61,43 @@ fun main1() = application {
     }
 }
 
+@ExperimentalTime
+infix fun String.time(function: () -> Unit) {
+    println("> Measuring time of $this")
+    val t = measureTime(function)
+    println("< Result: $t")
+}
+
+@OptIn(ExperimentalTime::class)
 fun main() {
-    val l = mutableListOf(3, 1, 4, 2)
-    println(l)
-    println(LomutoPartition<Int>().apply(l, 0, l.size - 1))
-    println(l)
+    val generator = RandomListGenerator.build {
+        minValue = 0
+        maxValue = 1000
+        elementsCount = 5_000_000
+    }
+
+    val qsc = QSortCoroutines<Int>(LomutoPartition())
+    val qst = QSortThreadPool<Int>(LomutoPartition(), ForkJoinPool())
+    val qss = QSortSequential<Int>(LomutoPartition())
+
+    var l = generator.generate().toMutableList()
+    val cpy = listOf(*l.toTypedArray())
+    "ksort" time {
+        l.sort()
+    }
+
+    l = mutableListOf(*cpy.toTypedArray())
+    "qsc" time {
+        qsc.sorted(l)
+    }
+
+    l = mutableListOf(*cpy.toTypedArray())
+    "qst" time {
+        qst.sorted(l)
+    }
+
+    l = mutableListOf(*cpy.toTypedArray())
+    "qss" time {
+        qss.sorted(l)
+    }
 }
