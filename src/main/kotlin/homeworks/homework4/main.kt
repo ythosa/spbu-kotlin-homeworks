@@ -70,6 +70,8 @@ infix fun String.time(function: () -> Unit) {
 
 @OptIn(ExperimentalTime::class)
 fun main() {
+    List<Int>(-1) {it}
+
     val generator = RandomListGenerator.build {
         minValue = 0
         maxValue = 1000

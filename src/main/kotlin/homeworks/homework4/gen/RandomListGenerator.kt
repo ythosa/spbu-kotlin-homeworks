@@ -19,6 +19,11 @@ class RandomListGenerator(
         var minValue = 0
         var maxValue = 0
         var elementsCount = 0
+            set(value) {
+                if (value < 0)
+                    throw IllegalArgumentException("the number of elements must be greater than or equal to 0")
+                field = value
+            }
 
         fun build() = RandomListGenerator(this)
     }
