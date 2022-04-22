@@ -1,4 +1,6 @@
 package homeworks.homework4.qsort.partitions
 
-class ApplyResult {
-}
+data class ApplyResult<T>(
+    val list: List<T>,
+    val partitionResult: PartitionResult
+)
