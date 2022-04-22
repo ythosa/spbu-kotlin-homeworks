@@ -50,7 +50,11 @@ internal class QSortTest {
     }
 
     companion object SortedTestDataProvider : ArgumentsProvider {
-        override fun provideArguments(context: ExtensionContext?): Stream<out Arguments> = listOf(
+        override fun provideArguments(context: ExtensionContext?): Stream<Arguments> = Stream.of(
+            Arguments.of(mutableListOf<Int>()),
+            Arguments.of(mutableListOf(5, 2, 1, 3, 4)),
+            Arguments.of(mutableListOf(1, 1, 1, 3, 4, 2)),
+            Arguments.of(mutableListOf(1, 1, 1, 1, 1, 1)),
             Arguments.of(
                 RandomListGenerator.build {
                     minValue = 0
@@ -65,6 +69,6 @@ internal class QSortTest {
                     elementsCount = 1000
                 }.generate().toMutableList().sorted()
             )
-        ).stream()
+        )
     }
 }
