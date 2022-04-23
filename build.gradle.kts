@@ -25,6 +25,9 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.1")
     implementation(compose.desktop.currentOs)
+    implementation("io.github.microutils:kotlin-logging-jvm:2.1.21")
+    implementation("ch.qos.logback:logback-classic:1.2.11")
+
 }
 
 tasks.test {

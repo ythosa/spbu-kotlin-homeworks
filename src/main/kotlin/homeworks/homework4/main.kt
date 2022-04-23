@@ -16,10 +16,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
-import homeworks.homework4.gen.RandomListGenerator
+import homeworks.homework4.bench.QSortBenchmark
+import homeworks.homework4.gen.RandomListOfIntsGenerator
+import homeworks.homework4.qsort.QSort
 import homeworks.homework4.qsort.QSortCoroutines
 import homeworks.homework4.qsort.QSortSequential
 import homeworks.homework4.qsort.QSortThreadPool
+import homeworks.homework4.qsort.partitions.DutchFlagPartition
+import homeworks.homework4.qsort.partitions.HoarePartition
 import homeworks.homework4.qsort.partitions.LomutoPartition
 import java.util.concurrent.ForkJoinPool
 import kotlin.time.ExperimentalTime
@@ -61,45 +65,28 @@ fun main1() = application {
     }
 }
 
-@ExperimentalTime
-infix fun String.time(function: () -> Unit) {
-    println("> Measuring time of $this")
-    val t = measureTime(function)
-    println("< Result: $t")
-}
-
-@OptIn(ExperimentalTime::class)
 fun main() {
-    List<Int>(-1) {it}
-
-    val generator = RandomListGenerator.build {
+    val generator = RandomListOfIntsGenerator.build {
         minValue = 0
-        maxValue = 1000
-        elementsCount = 5_000_000
+        maxValue = 1_000_000
+        elementsCount = 500_000
     }
+    val benchmark = QSortBenchmark(3, 2, generator)
+    val qSorts = mapOf<String, QSort<Int>>(
+        "coroutines with Lomuto" to QSortCoroutines(LomutoPartition()),
+        "coroutines with Hoare" to QSortCoroutines(HoarePartition()),
+        "coroutines with DutchFlag" to QSortCoroutines(DutchFlagPartition()),
+        "thread pool with Lomuto" to QSortThreadPool(LomutoPartition(), ForkJoinPool()),
+        "thread pool with Hoare" to QSortThreadPool(HoarePartition(), ForkJoinPool()),
+        "thread pool with DutchFlag" to QSortThreadPool(DutchFlagPartition(), ForkJoinPool()),
+        "single thread with Lomuto" to QSortSequential(LomutoPartition()),
+        "single thread with Hoare" to QSortSequential(HoarePartition()),
+        "single thread with DutchFlag" to QSortSequential(DutchFlagPartition()),
+    )
 
-    val qsc = QSortCoroutines<Int>(LomutoPartition())
-    val qst = QSortThreadPool<Int>(LomutoPartition(), ForkJoinPool())
-    val qss = QSortSequential<Int>(LomutoPartition())
+    val benchmarkResult = benchmark.benchAll(qSorts)
 
-    var l = generator.generate().toMutableList()
-    val cpy = listOf(*l.toTypedArray())
-    "ksort" time {
-        l.sort()
-    }
-
-    l = mutableListOf(*cpy.toTypedArray())
-    "qsc" time {
-        qsc.sorted(l)
-    }
-
-    l = mutableListOf(*cpy.toTypedArray())
-    "qst" time {
-        qst.sorted(l)
-    }
-
-    l = mutableListOf(*cpy.toTypedArray())
-    "qss" time {
-        qss.sorted(l)
+    for ((name, duration) in benchmarkResult) {
+        println("$name: $duration")
     }
 }

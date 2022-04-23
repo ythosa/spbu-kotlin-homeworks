@@ -2,14 +2,14 @@ package homeworks.homework4.gen
 
 import kotlin.random.Random
 
-class RandomListGenerator(
+class RandomListOfIntsGenerator(
     private val minValue: Int,
     private val maxValue: Int,
     private val elementCount: Int
-) {
+) : ListGenerator<Int> {
     private constructor(builder: Builder) : this(builder.minValue, builder.maxValue, builder.elementsCount)
 
-    fun generate(): List<Int> = List(elementCount) { Random.nextInt(minValue, maxValue) }
+    override fun generate(): List<Int> = List(elementCount) { Random.nextInt(minValue, maxValue) }
 
     companion object {
         inline fun build(block: Builder.() -> Unit) = Builder().apply(block).build()
@@ -25,6 +25,6 @@ class RandomListGenerator(
                 field = value
             }
 
-        fun build() = RandomListGenerator(this)
+        fun build() = RandomListOfIntsGenerator(this)
     }
 }

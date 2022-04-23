@@ -1,6 +1,6 @@
 package homeworks.homework4.qsort
 
-import homeworks.homework4.gen.RandomListGenerator
+import homeworks.homework4.gen.RandomListOfIntsGenerator
 import homeworks.homework4.qsort.partitions.LomutoPartition
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Nested
@@ -56,14 +56,14 @@ internal class QSortTest {
             Arguments.of(mutableListOf(1, 1, 1, 3, 4, 2)),
             Arguments.of(mutableListOf(1, 1, 1, 1, 1, 1)),
             Arguments.of(
-                RandomListGenerator.build {
+                RandomListOfIntsGenerator.build {
                     minValue = 0
                     maxValue = 1000
                     elementsCount = 1000
                 }.generate().toMutableList()
             ),
             Arguments.of(
-                RandomListGenerator.build {
+                RandomListOfIntsGenerator.build {
                     minValue = 0
                     maxValue = 1000
                     elementsCount = 1000

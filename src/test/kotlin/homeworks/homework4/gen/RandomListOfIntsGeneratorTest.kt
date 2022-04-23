@@ -1,6 +1,5 @@
 package homeworks.homework4.gen
 
-import homeworks.homework1.task3.ui.handlers.InvalidArgumentsException
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
@@ -9,11 +8,11 @@ import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
 
-internal class RandomListGeneratorTest {
+internal class RandomListOfIntsGeneratorTest {
     @ParameterizedTest
     @MethodSource("getGenerateTestData")
     fun generate(generatorParameters: GeneratorParameters) {
-        val generated = RandomListGenerator.build {
+        val generated = RandomListOfIntsGenerator.build {
             minValue = generatorParameters.minValue
             maxValue = generatorParameters.maxValue
             elementsCount = generatorParameters.elementsCount
@@ -27,14 +26,14 @@ internal class RandomListGeneratorTest {
     @Test
     fun `invalid generator bounds`() {
         assertThrows<IllegalArgumentException> {
-            RandomListGenerator.build { minValue = 0; maxValue = 0; elementsCount = 100 }.generate()
+            RandomListOfIntsGenerator.build { minValue = 0; maxValue = 0; elementsCount = 100 }.generate()
         }
     }
 
     @Test
     fun `invalid generator elements count`() {
         assertThrows<IllegalArgumentException> {
-            RandomListGenerator.build { minValue = 1; maxValue = 0; elementsCount = -1 }.generate()
+            RandomListOfIntsGenerator.build { minValue = 1; maxValue = 0; elementsCount = -1 }.generate()
         }
     }
 
