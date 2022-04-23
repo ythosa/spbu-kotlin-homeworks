@@ -21,7 +21,7 @@ class QSortBenchmark<T : Comparable<T>>(
         val lists = generateSequence(listGenerator.generate().toMutableList()) {
             listGenerator.generate().toMutableList()
         }
-        val times = lists.map { measureTime { qSort.sorted(it) } }.drop(warmUpsNumber).take(repetitionsNumber)
+        val times = lists.map { measureTime { qSort.sorted(it) } }.drop(warmUpsNumber).take(repetitionsNumber).toList()
 
         return times.reduce { acc, duration -> acc + duration }.div(repetitionsNumber)
     }
