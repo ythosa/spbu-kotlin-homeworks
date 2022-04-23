@@ -8,6 +8,7 @@ class DutchFlagPartition<T : Comparable<T>> : Partition<T> {
         var smaller = lowIndex
         var equal = lowIndex
         var larger = highIndex
+
         while (equal <= larger) {
             if (list[equal] < pivot) {
                 list.swapAt(smaller, equal)
@@ -20,6 +21,7 @@ class DutchFlagPartition<T : Comparable<T>> : Partition<T> {
                 larger -= 1
             }
         }
+
         return PartitionResult(smaller - 1, larger + 1)
     }
 }

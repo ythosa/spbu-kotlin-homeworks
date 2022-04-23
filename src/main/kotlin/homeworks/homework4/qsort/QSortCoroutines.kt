@@ -4,9 +4,13 @@ import homeworks.homework4.qsort.partitions.Partition
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlin.coroutines.CoroutineContext
 
-class QSortCoroutines<T : Comparable<T>>(private val partition: Partition<T>) : QSort<T> {
-    override fun sorted(list: MutableList<T>): Unit = runBlocking {
+class QSortCoroutines<T : Comparable<T>>(
+    private val partition: Partition<T>,
+    private val context: CoroutineContext
+) : QSort<T> {
+    override fun sorted(list: MutableList<T>): Unit = runBlocking(context) {
         sort(list)
     }
 
@@ -18,11 +22,11 @@ class QSortCoroutines<T : Comparable<T>>(private val partition: Partition<T>) : 
         if (lowIndex < highIndex) {
             val partitionIndices = partition.apply(list, lowIndex, highIndex)
 
-            launch {
+            launch() {
                 sort(list, lowIndex, partitionIndices.leftToIndex)
             }
 
-            launch {
+            launch() {
                 sort(list, partitionIndices.rightFromIndex, highIndex)
             }
         }

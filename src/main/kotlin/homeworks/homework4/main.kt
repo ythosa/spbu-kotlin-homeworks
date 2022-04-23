@@ -25,9 +25,9 @@ import homeworks.homework4.qsort.QSortThreadPool
 import homeworks.homework4.qsort.partitions.DutchFlagPartition
 import homeworks.homework4.qsort.partitions.HoarePartition
 import homeworks.homework4.qsort.partitions.LomutoPartition
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.asCoroutineDispatcher
 import java.util.concurrent.ForkJoinPool
-import kotlin.time.ExperimentalTime
-import kotlin.time.measureTime
 
 @Composable
 @Preview
@@ -68,14 +68,14 @@ fun main1() = application {
 fun main() {
     val generator = RandomListOfIntsGenerator.build {
         minValue = 0
-        maxValue = 1_000_000
-        elementsCount = 500_000
+        maxValue = 10_000_000
+        elementsCount = 5_000_000
     }
-    val benchmark = QSortBenchmark(3, 2, generator)
+    val benchmark = QSortBenchmark(3, 5, generator)
     val qSorts = mapOf<String, QSort<Int>>(
-        "coroutines with Lomuto" to QSortCoroutines(LomutoPartition()),
-        "coroutines with Hoare" to QSortCoroutines(HoarePartition()),
-        "coroutines with DutchFlag" to QSortCoroutines(DutchFlagPartition()),
+        "coroutines with Lomuto" to QSortCoroutines(LomutoPartition(), ForkJoinPool().asCoroutineDispatcher()),
+        "coroutines with Hoare" to QSortCoroutines(HoarePartition(), ForkJoinPool().asCoroutineDispatcher()),
+        "coroutines with DutchFlag" to QSortCoroutines(DutchFlagPartition(), ForkJoinPool().asCoroutineDispatcher()),
         "thread pool with Lomuto" to QSortThreadPool(LomutoPartition(), ForkJoinPool()),
         "thread pool with Hoare" to QSortThreadPool(HoarePartition(), ForkJoinPool()),
         "thread pool with DutchFlag" to QSortThreadPool(DutchFlagPartition(), ForkJoinPool()),
