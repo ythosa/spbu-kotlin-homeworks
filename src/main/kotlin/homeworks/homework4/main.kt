@@ -1,21 +1,5 @@
 package homeworks.homework4
 
-import androidx.compose.desktop.ui.tooling.preview.Preview
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.Button
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Window
-import androidx.compose.ui.window.application
-import androidx.compose.ui.window.rememberWindowState
 import homeworks.homework4.bench.QSortBenchmark
 import homeworks.homework4.gen.RandomListOfIntsGenerator
 import homeworks.homework4.qsort.QSort
@@ -25,47 +9,72 @@ import homeworks.homework4.qsort.QSortThreadPool
 import homeworks.homework4.qsort.partitions.DutchFlagPartition
 import homeworks.homework4.qsort.partitions.HoarePartition
 import homeworks.homework4.qsort.partitions.LomutoPartition
-import kotlinx.coroutines.DelicateCoroutinesApi
+import jetbrains.letsPlot.export.ggsave
+import jetbrains.letsPlot.geom.geomLine
+import jetbrains.letsPlot.geom.geomPoint
+import jetbrains.letsPlot.ggplot
+import jetbrains.letsPlot.ggsize
 import kotlinx.coroutines.asCoroutineDispatcher
 import java.util.concurrent.ForkJoinPool
-
-@Composable
-@Preview
-fun App() {
-    val count = remember { mutableStateOf(0) }
-    MaterialTheme {
-        Column(Modifier.fillMaxSize(), Arrangement.spacedBy(5.dp)) {
-            Button(
-                modifier = Modifier.align(Alignment.CenterHorizontally),
-                onClick = {
-                    count.value++
-                }
-            ) {
-                Text(if (count.value == 0) "Hello World" else "Clicked ${count.value}!")
-            }
-            Button(
-                modifier = Modifier.align(Alignment.CenterHorizontally),
-                onClick = {
-                    count.value = 0
-                }
-            ) {
-                Text("Reset")
-            }
-        }
-    }
-}
-
-fun main1() = application {
-    Window(
-        onCloseRequest = ::exitApplication,
-        title = "Yay graphs",
-        state = rememberWindowState(width = 1080.dp, height = 960.dp)
-    ) {
-        App()
-    }
-}
+import kotlin.time.Duration
+import kotlin.time.DurationUnit
 
 fun main() {
+    val data = getDataFrame()
+    println(data)
+
+    val p = ggplot(data) { y = "durations"; x = "elementsCount"; color = "names" } +
+            ggsize(2000, 1500) +
+            geomPoint() +
+            geomLine()
+    //            geomSmooth()
+
+    ggsave(p, "density.png")
+}
+
+data class Bench(val name: String, val elementsCount: Int, val duration: Duration)
+
+fun getDataFrame(): MutableMap<String, Any> {
+    val data = mutableListOf<Bench>()
+
+    val from = 100_000
+    val to = 1_000_000
+    val step = 100_000
+
+    for (count in from..to step step) {
+        val generator = RandomListOfIntsGenerator.build {
+            minValue = 0
+            maxValue = 10_000_000
+            elementsCount = count
+        }
+        val benchmark = QSortBenchmark(1, 0, generator)
+        val qSorts = mapOf<String, QSort<Int>>(
+            "coroutines with Lomuto" to QSortCoroutines(LomutoPartition(), ForkJoinPool().asCoroutineDispatcher()),
+            "coroutines with Hoare" to QSortCoroutines(HoarePartition(), ForkJoinPool().asCoroutineDispatcher()),
+            "coroutines with DutchFlag" to QSortCoroutines(DutchFlagPartition(), ForkJoinPool().asCoroutineDispatcher()),
+            "thread pool with Lomuto" to QSortThreadPool(LomutoPartition(), ForkJoinPool()),
+            "thread pool with Hoare" to QSortThreadPool(HoarePartition(), ForkJoinPool()),
+            "thread pool with DutchFlag" to QSortThreadPool(DutchFlagPartition(), ForkJoinPool()),
+            "single thread with Lomuto" to QSortSequential(LomutoPartition()),
+            "single thread with Hoare" to QSortSequential(HoarePartition()),
+            "single thread with DutchFlag" to QSortSequential(DutchFlagPartition()),
+        )
+
+        data.addAll(benchmark.benchAll(qSorts).map { Bench(it.key, count, it.value) })
+    }
+
+    data.sortBy { it.duration }
+
+    val result = mutableMapOf<String, Any>()
+
+    result["names"] = data.map { it.name }
+    result["durations"] = data.map { it.duration.toInt(DurationUnit.MILLISECONDS) }
+    result["elementsCount"] = data.map { it.elementsCount }
+
+    return result
+}
+
+fun main11() {
     val generator = RandomListOfIntsGenerator.build {
         minValue = 0
         maxValue = 10_000_000
