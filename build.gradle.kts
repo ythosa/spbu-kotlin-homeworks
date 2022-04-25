@@ -38,7 +38,6 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.1")
     implementation("io.github.microutils:kotlin-logging-jvm:2.1.21")
     implementation("ch.qos.logback:logback-classic:1.2.11")
-//    implementation("org.jetbrains.lets-plot:lets-plot-common:2.3.0")
     implementation("org.jetbrains.lets-plot:lets-plot-jfx:2.3.0")
     implementation("org.jetbrains.lets-plot:lets-plot-kotlin-jvm:3.2.0")
     implementation("org.jetbrains.lets-plot:lets-plot-image-export:2.3.0")
