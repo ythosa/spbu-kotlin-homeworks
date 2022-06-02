@@ -1,9 +1,13 @@
 package finals.wikirace.config
 
+import finals.wikirace.getRandomPageAtMain
 import io.github.fastily.jwiki.core.Wiki
 
-class ConfigReader(private val defaultConfig: WikipediaRaceConfig) {
-    fun read(wikiClient: Wiki) = WikipediaRaceConfig.Builder(wikiClient)
+class ConfigReader(
+    private val wikiClient: Wiki,
+    private val defaultConfig: Config
+) {
+    fun read() = Config.Builder(wikiClient)
         .searchTarget(readSearchTarget())
         .searchDepth(readSearchDepth())
         .processCount(readProcessCount())
@@ -52,7 +56,7 @@ class ConfigReader(private val defaultConfig: WikipediaRaceConfig) {
         print("\uD83C\uDF52 Input start page (example: ${defaultConfig.startPage}, default: random): ")
 
         return readln().ifEmpty {
-            defaultConfig.startPage
+            wikiClient.getRandomPageAtMain()
         }
     }
 }

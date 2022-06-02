@@ -2,7 +2,7 @@ package finals.wikirace.config
 
 import io.github.fastily.jwiki.core.Wiki
 
-class WikipediaRaceConfig private constructor(builder: Builder) {
+class Config private constructor(builder: Builder) {
     val searchTarget: String = builder.searchTarget
     val searchDepth: Int = builder.searchDepth
     val processCount: Int = builder.processCount
@@ -34,7 +34,14 @@ class WikipediaRaceConfig private constructor(builder: Builder) {
             startPage = url.also { validateStartPageUrl(it) }
         }
 
-        fun build() = WikipediaRaceConfig(this)
+        fun build() = Config(this)
+
+        fun buildDefault() = Config(
+            this.searchTarget("Adolf Hitler")
+                .searchDepth(0)
+                .processCount(1)
+                .startPage("Adolf Hitler")
+        )
 
         private fun validateSearchTargetUrl(target: String) {
             if (!wikiClient.exists(target)) {
@@ -62,11 +69,7 @@ class WikipediaRaceConfig private constructor(builder: Builder) {
     }
 
     companion object {
-        fun getDefaultConfig(wikiClient: Wiki) = Builder(wikiClient)
-            .searchTarget("Adolf Hitler")
-            .searchDepth(0)
-            .processCount(1)
-            .startPage("Adolf Hitler")
-            .build()
+        fun getDefaultConfig(builder: Builder) = builder
+
     }
 }

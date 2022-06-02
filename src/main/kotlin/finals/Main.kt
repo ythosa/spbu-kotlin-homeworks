@@ -1,16 +1,22 @@
 package finals
 
-import io.github.fastily.jwiki.core.NS
+import finals.wikirace.WikiRace
+import finals.wikirace.config.Config
+import finals.wikirace.config.ConfigReader
+import finals.wikirace.config.InvalidConfigParameter
 import io.github.fastily.jwiki.core.Wiki
 
 fun main() {
-    val wiki = Wiki.Builder().build()
+    val wikiClient = Wiki.Builder().withDefaultLogger(false).build()
+    val configBuilder = Config.Builder(wikiClient)
+    val defaultConfig = configBuilder.buildDefault()
 
-    println(wiki.getRandomPages(5, NS.MAIN))
-    println(wiki.getLinksOnPage(wiki.getRandomPages(5, NS.MAIN)[1]))
-//    try {
-//        val config = ConfigReader(defaultConfig).read()
-//    } catch (exception: InvalidConfigParameter) {
-//        println("❌ ${exception.message}")
-//    }
+    try {
+        val config = ConfigReader(wikiClient, defaultConfig).read()
+        val wikiRace = WikiRace(config)
+
+        wikiRace.start()
+    } catch (exception: InvalidConfigParameter) {
+        println("❌ ${exception.message}")
+    }
 }
