@@ -1,18 +1,20 @@
 package finals
 
+import io.github.fastily.jwiki.core.Wiki
+
 class ConfigReader(private val defaultConfig: WikipediaRaceConfig) {
-    fun read() = WikipediaRaceConfig.Builder()
-        .searchTargetUrl(readSearchTargetUrl())
+    fun read(wikiClient: Wiki) = WikipediaRaceConfig.Builder(wikiClient)
+        .searchTarget(readSearchTarget())
         .searchDepth(readSearchDepth())
         .processCount(readProcessCount())
-        .startPageUrl(readStartPageUrl())
+        .startPage(readStartPage())
         .build()
 
-    private fun readSearchTargetUrl(): String {
-        print("\uD83C\uDF49 Input search target url (default: ${defaultConfig.searchTargetUrl}): ")
+    private fun readSearchTarget(): String {
+        print("\uD83C\uDF49 Input search target (default: ${defaultConfig.searchTarget}): ")
 
         return readln().ifEmpty {
-            defaultConfig.searchTargetUrl
+            defaultConfig.searchTarget
         }
     }
 
@@ -46,11 +48,11 @@ class ConfigReader(private val defaultConfig: WikipediaRaceConfig) {
         }
     }
 
-    private fun readStartPageUrl(): String {
-        print("\uD83C\uDF52 Input start page url (example: ${defaultConfig.startPageUrl}, default: random): ")
+    private fun readStartPage(): String {
+        print("\uD83C\uDF52 Input start page (example: ${defaultConfig.startPage}, default: random): ")
 
         return readln().ifEmpty {
-            defaultConfig.startPageUrl
+            defaultConfig.startPage
         }
     }
 }

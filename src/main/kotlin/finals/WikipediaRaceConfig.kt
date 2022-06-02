@@ -1,30 +1,25 @@
 package finals
 
-val defaultConfig = WikipediaRaceConfig.Builder()
-    .searchTargetUrl("https://en.wikipedia.org/wiki/Adolf_Hitler")
-    .searchDepth(0)
-    .processCount(1)
-    .startPageUrl("https://en.wikipedia.org/wiki/Adolf_Hitler")
-    .build()
+import io.github.fastily.jwiki.core.Wiki
 
 class WikipediaRaceConfig private constructor(builder: Builder) {
-    val searchTargetUrl: String = builder.searchTargetUrl
+    val searchTarget: String = builder.searchTarget
     val searchDepth: Int = builder.searchDepth
     val processCount: Int = builder.processCount
-    val startPageUrl: String = builder.startPageUrl
+    val startPage: String = builder.startPage
 
-    class Builder {
-        var searchTargetUrl = ""
+    class Builder(private val wikiClient: Wiki) {
+        var searchTarget = ""
             private set
         var searchDepth = 1
             private set
         var processCount = 0
             private set
-        var startPageUrl = ""
+        var startPage = ""
             private set
 
-        fun searchTargetUrl(target: String) = this.apply {
-            searchTargetUrl = target.also { validateSearchTargetUrl(it) }
+        fun searchTarget(target: String) = this.apply {
+            searchTarget = target.also { validateSearchTargetUrl(it) }
         }
 
         fun searchDepth(depth: Int) = this.apply {
@@ -35,14 +30,14 @@ class WikipediaRaceConfig private constructor(builder: Builder) {
             processCount = count.also { validateProcessCount(it) }
         }
 
-        fun startPageUrl(url: String) = this.apply {
-            startPageUrl = url.also { validateStartPageUrl(it) }
+        fun startPage(url: String) = this.apply {
+            startPage = url.also { validateStartPageUrl(it) }
         }
 
         fun build() = WikipediaRaceConfig(this)
 
         private fun validateSearchTargetUrl(target: String) {
-            if (!isValidWikiPage(target)) {
+            if (!wikiClient.exists(target)) {
                 throw InvalidConfigParameter("valid wiki url", target)
             }
         }
@@ -60,9 +55,18 @@ class WikipediaRaceConfig private constructor(builder: Builder) {
         }
 
         private fun validateStartPageUrl(page: String) {
-            if (!isValidWikiPage(page)) {
+            if (!wikiClient.exists(page)) {
                 throw InvalidConfigParameter("valid wiki url", page)
             }
         }
+    }
+
+    companion object {
+        fun getDefaultConfig(wikiClient: Wiki) = WikipediaRaceConfig.Builder(wikiClient)
+            .searchTarget("Adolf Hitler")
+            .searchDepth(0)
+            .processCount(1)
+            .startPage("Adolf Hitler")
+            .build()
     }
 }
