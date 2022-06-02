@@ -23,20 +23,17 @@ class WikiRace(private val wikiClient: Wiki, private val config: Config) {
         var level = 1
 
         while (!currentLevel.isEmpty() && level <= config.searchDepth) {
-            val resultsChannel = Channel<List<String>?>()
-
+            val isTargetFoundChannel = Channel<Boolean>()
             val pageProcessors = currentLevel.map {
                 launch {
-                    resultsChannel.send(processPage(it, start, target, nextLevel, parents))
+                    isTargetFoundChannel.send(processPage(it, start, target, nextLevel, parents))
                 }
             }
-
             repeat(currentLevel.size) {
-                val result = resultsChannel.receive()
-                if (result != null) {
+                if (isTargetFoundChannel.receive()) {
                     pageProcessors.forEach { it.cancel() }
 
-                    return@coroutineScope result
+                    return@coroutineScope backtrace(parents, start, target)
                 }
             }
 
@@ -55,11 +52,11 @@ class WikiRace(private val wikiClient: Wiki, private val config: Config) {
         target: String,
         nextLevel: ConcurrentLinkedQueue<String>,
         parents: ConcurrentHashMap<String, String>
-    ): List<String>? {
+    ): Boolean {
         println("...Processing ${backtrace(parents, start, page).toPath()}")
 
         if (page == target) {
-            return backtrace(parents, start, target)
+            return true
         }
 
         for (link in wikiClient.getLinksOnPageInMain(page)) {
@@ -69,7 +66,7 @@ class WikiRace(private val wikiClient: Wiki, private val config: Config) {
             }
         }
 
-        return null
+        return false
     }
 
     private fun backtrace(parents: ConcurrentHashMap<String, String>, start: String, target: String): List<String> {
