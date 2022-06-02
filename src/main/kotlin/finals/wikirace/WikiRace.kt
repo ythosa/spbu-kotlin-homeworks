@@ -2,18 +2,14 @@ package finals.wikirace
 
 import finals.wikirace.config.Config
 import io.github.fastily.jwiki.core.Wiki
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.sync.Semaphore
+import kotlinx.coroutines.*
+import kotlinx.coroutines.channels.Channel
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ConcurrentLinkedQueue
+import java.util.concurrent.ForkJoinPool
 
 class WikiRace(private val wikiClient: Wiki, private val config: Config) {
-    private val semaphore = Semaphore(config.processCount)
-
-    fun play(): String = runBlocking {
+    fun play(): String = runBlocking(ForkJoinPool(config.processCount).asCoroutineDispatcher()) {
         bfs(config.startPage, config.searchTarget).toPath()
     }
 
@@ -24,20 +20,21 @@ class WikiRace(private val wikiClient: Wiki, private val config: Config) {
         var level = 1
 
         while (!currentLevel.isEmpty() && level <= config.searchDepth) {
-            val pageProcessors = currentLevel.map {
-                async {
-                    semaphore.acquire()
-                    val result = processPage(it, start, target, nextLevel, parents)
-                    semaphore.release()
+            val resultsChannel = Channel<List<String>?>()
 
-                    return@async result
+            val pageProcessors = currentLevel.map {
+                launch {
+                    resultsChannel.send(processPage(it, start, target, nextLevel, parents))
                 }
             }
 
-            val pageProcessingResults = awaitAll(deferreds = pageProcessors.toTypedArray())
-            val resultPath = pageProcessingResults.filterNotNull().firstOrNull()
-            if (resultPath != null) {
-                return@coroutineScope resultPath
+            repeat(currentLevel.size) {
+                val result = resultsChannel.receive()
+                if (result != null) {
+                    pageProcessors.forEach { it.cancel() }
+
+                    return@coroutineScope result
+                }
             }
 
             currentLevel.clear()
