@@ -1,0 +1,4 @@
+package finals
+
+class WikipediaRace {
+}
