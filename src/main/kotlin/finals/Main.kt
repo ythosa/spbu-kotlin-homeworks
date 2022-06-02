@@ -15,10 +15,14 @@ fun main() {
         val config = ConfigReader(wikiClient, defaultConfig).read()
         val wikiRace = WikiRace(wikiClient, config)
 
-        val resultSearchPath = wikiRace.start()
+        val resultSearchPath = wikiRace.play()
 
-
-
+        print("\n✔️ Result: ")
+        if (resultSearchPath.isEmpty()) {
+            println("Target page not found with such depth \uD83E\uDD7A")
+        } else {
+            println("$resultSearchPath \uD83E\uDD73")
+        }
     } catch (exception: InvalidConfigParameter) {
         println("❌ ${exception.message}")
     }

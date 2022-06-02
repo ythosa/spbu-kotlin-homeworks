@@ -33,7 +33,7 @@ class ConfigReader(
         try {
             return userInput.toInt()
         } catch (e: NumberFormatException) {
-            throw InvalidConfigParameter("integer", this)
+            throw InvalidConfigParameter("integer", userInput)
         }
     }
 
@@ -48,7 +48,7 @@ class ConfigReader(
         try {
             return userInput.toInt()
         } catch (e: NumberFormatException) {
-            throw InvalidConfigParameter("integer", this)
+            throw InvalidConfigParameter("integer", userInput)
         }
     }
 

@@ -67,9 +67,4 @@ class Config private constructor(builder: Builder) {
             }
         }
     }
-
-    companion object {
-        fun getDefaultConfig(builder: Builder) = builder
-
-    }
 }
