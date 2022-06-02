@@ -1,4 +1,4 @@
-package finals
+package finals.wikirace.config
 
 import io.github.fastily.jwiki.core.Wiki
 

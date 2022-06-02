@@ -1,4 +1,4 @@
-package finals
+package finals.wikirace.config
 
 class InvalidConfigParameter(
     expected: String,

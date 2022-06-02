@@ -1,4 +1,4 @@
-package finals
+package finals.wikirace.config
 
 import io.github.fastily.jwiki.core.Wiki
 
@@ -62,7 +62,7 @@ class WikipediaRaceConfig private constructor(builder: Builder) {
     }
 
     companion object {
-        fun getDefaultConfig(wikiClient: Wiki) = WikipediaRaceConfig.Builder(wikiClient)
+        fun getDefaultConfig(wikiClient: Wiki) = Builder(wikiClient)
             .searchTarget("Adolf Hitler")
             .searchDepth(0)
             .processCount(1)

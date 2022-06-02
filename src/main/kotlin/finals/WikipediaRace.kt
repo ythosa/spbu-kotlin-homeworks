@@ -1,4 +1,0 @@
-package finals
-
-class WikipediaRace {
-}
