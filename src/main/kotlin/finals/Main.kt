@@ -13,9 +13,12 @@ fun main() {
 
     try {
         val config = ConfigReader(wikiClient, defaultConfig).read()
-        val wikiRace = WikiRace(config)
+        val wikiRace = WikiRace(wikiClient, config)
 
-        wikiRace.start()
+        val resultSearchPath = wikiRace.start()
+
+
+
     } catch (exception: InvalidConfigParameter) {
         println("❌ ${exception.message}")
     }

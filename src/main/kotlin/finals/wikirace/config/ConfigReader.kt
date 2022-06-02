@@ -1,6 +1,6 @@
 package finals.wikirace.config
 
-import finals.wikirace.getRandomPageAtMain
+import finals.wikirace.getRandomPageInMain
 import io.github.fastily.jwiki.core.Wiki
 
 class ConfigReader(
@@ -56,7 +56,7 @@ class ConfigReader(
         print("\uD83C\uDF52 Input start page (example: ${defaultConfig.startPage}, default: random): ")
 
         return readln().ifEmpty {
-            wikiClient.getRandomPageAtMain()
+            wikiClient.getRandomPageInMain()
         }
     }
 }
