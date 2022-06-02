@@ -2,7 +2,10 @@ package finals.wikirace
 
 import finals.wikirace.config.Config
 import io.github.fastily.jwiki.core.Wiki
-import kotlinx.coroutines.*
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.asCoroutineDispatcher
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.channels.Channel
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ConcurrentLinkedQueue
