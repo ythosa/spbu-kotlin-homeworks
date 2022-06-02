@@ -18,12 +18,10 @@ class WikiRace(private val wikiClient: Wiki, private val config: Config) {
     }
 
     private suspend fun bfs(start: String, target: String): List<String> = coroutineScope {
-        val parents = ConcurrentHashMap<String, String>()
-        val currentLevel = ConcurrentLinkedQueue<String>()
+        val parents = ConcurrentHashMap<String, String>().apply { this[start] = "" }
+        val currentLevel = ConcurrentLinkedQueue<String>().apply { add(start) }
         val nextLevel = ConcurrentLinkedQueue<String>()
         var level = 1
-
-        currentLevel.add(start)
 
         while (!currentLevel.isEmpty() && level <= config.searchDepth) {
             val pageProcessors = currentLevel.map {
