@@ -65,7 +65,7 @@ class WikiRace(private val wikiClient: Wiki, private val config: Config) {
         }
 
         for (link in wikiClient.getLinksOnPageInMain(page)) {
-            if (!parents.contains(link)) {
+            if (!parents.keys().toList().contains(link)) {
                 parents[link] = page
                 nextLevel.add(link)
             }
