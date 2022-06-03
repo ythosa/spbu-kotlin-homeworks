@@ -18,6 +18,9 @@ dependencies {
     detekt("io.gitlab.arturbosch.detekt:detekt-cli:1.19.0")
     testImplementation(platform("org.junit:junit-bom:5.8.2"))
     testImplementation("org.junit.jupiter:junit-jupiter")
+
+    implementation("io.github.fastily:jwiki:1.10.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.2")
 }
 
 tasks.test {
